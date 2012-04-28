@@ -2,4 +2,5 @@ zabbix
 
 This is the zabbix module.
 
-Not tested yet, for now pushed to github to easily distribute around to some test boxes later on
+Don't use it in it's current state. For example, preseeding a proxy install does not work correctly, server and frontend installs are not even tested. Probably lots of other bugs.
+Any other client OS than Ubuntu 10.04 will fail.

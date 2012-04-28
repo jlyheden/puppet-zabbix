@@ -9,7 +9,7 @@
   "version": "0.0.1",
   "checksums": {
     "Modulefile": "6e323e25d347ee1259468b9f5135e3c4",
-    "README": "a1c0e917eff09b240f8e28e00371bbc5",
+    "README": "9767aaf6a334875e3c4cf81c7e5362c5",
     "manifests/agent.pp": "943fe88fc9b69e355444138eac44bd40",
     "manifests/agent/config.pp": "9e40e2872f7b36cdc70531b8e22557a0",
     "manifests/agent/package.pp": "dae4d829276ae76bf983b2a557bb6d6d",
