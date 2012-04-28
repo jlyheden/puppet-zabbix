@@ -40,7 +40,7 @@
  		ensure	=> $zabbix::agent::ensure,
  		mode	=> 644,
  		notify	=> Class["zabbix::agent::service"],
- 		content	=> template("zabbix/agent/$::lsbdistcodename/zabbix_agentd.conf.erb")
+ 		content	=> template("zabbix/agent/${zabbix::agent::version}/zabbix_agentd.conf.erb")
  	}
  
  	file { [$zabbix::params::agent_pid_dir, $zabbix::params::agent_log_dir]:

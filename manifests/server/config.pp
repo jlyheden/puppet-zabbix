@@ -38,7 +38,7 @@ class zabbix::server::config {
 		mode	=> 640,
 		group	=> $zabbix::params::group,
 		notify	=> Class["zabbix::server::service"],
-		content	=> template("zabbix/server/$::lsbdistcodename/zabbix_server.conf.erb")
+		content	=> template("zabbix/server/${zabbix::server::version}/zabbix_server.conf.erb")
 	}
 
  	file { [$zabbix::params::server_pid_dir, $zabbix::params::server_log_dir]:

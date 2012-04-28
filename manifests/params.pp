@@ -91,4 +91,28 @@
  	$server_pingerfrequency = 60
  	$server_cachesize = "8M"
 
+	# Zabbix proxy defaults
+	$proxy_port = 10051
+ 	$proxy_startpollers = 5
+ 	$proxy_startipmipollers = 0
+ 	$proxy_startpollersunreachable = 1
+ 	$proxy_starttrappers = 5
+ 	$proxy_startpingers = 1
+ 	$proxy_startdiscoverers = 1
+ 	$proxy_starthttppollers = 1
+	$proxy_heartbeatfrequency = 60
+ 	$proxy_housekeepingfrequency = 1
+	$proxy_configfrequency = 3600
+ 	$proxy_senderfrequency = 30
+	$proxy_proxylocalbuffer = 0
+	$proxy_proxyofflinebuffer = 1
+ 	$proxy_debuglevel = 3
+ 	$proxy_timeout = 5
+ 	$proxy_trappertimeout = 5
+ 	$proxy_unreachableperiod = 45
+ 	$proxy_unavailabledelay = 60
+ 	$proxy_logfilesize = 10
+ 	$proxy_tmpdir = "/tmp"
+ 	$proxy_pingerfrequency = 60
+
 }

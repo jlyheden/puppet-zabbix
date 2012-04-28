@@ -29,8 +29,8 @@ UnavailableDelay=<%= scope.lookupvar("zabbix::server::unavailabledelay") %>
 PidFile=<%= scope.lookupvar("zabbix::params::server_pid_dir") %>/zabbix_server.pid
 LogFile=<%= scope.lookupvar("zabbix::params::server_log_dir") %>/zabbix_server.log
 LogFileSize=<%= scope.lookupvar("zabbix::server::logfilesize") %>
-AlertScriptsPath=<%= scope.lookupvar("zabbix::params::server_config_alertd_dir") %>/
-ExternalScripts=<%= scope.lookupvar("zabbix::params::server_config_externalscripts_dir") %>
+AlertScriptsPath=<%= scope.lookupvar("zabbix::params::alertd_dir") %>/
+ExternalScripts=<%= scope.lookupvar("zabbix::params::externalscripts_dir") %>
 
 FpingLocation=/usr/bin/fping
 

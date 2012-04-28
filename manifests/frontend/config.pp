@@ -28,7 +28,7 @@
  		ensure	=> $zabbix::frontend::ensure,
  		mode	=> 644,
  		notify	=> Service[$zabbix::frontend::webserver],
- 		content	=> template("zabbix/frontend/${zabbix::agent::version}/dbconfig.php.erb")
+ 		content	=> template("zabbix/frontend/${zabbix::frontend::version}/dbconfig.php.erb")
  	}
   
  }
