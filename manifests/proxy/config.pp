@@ -19,7 +19,7 @@ class zabbix::proxy::config {
 		mode	=> 640,
 		group	=> $zabbix::params::group,
 		notify	=> Class["zabbix::proxy::service"],
-		content	=> template("zabbix/server/$::lsbdistcodename/zabbix_server.conf.erb")
+		content	=> template("zabbix/proxy/${zabbix::proxy::version}/zabbix_proxy.conf.erb")
 	}
 
  	file { [$zabbix::params::proxy_pid_dir, $zabbix::params::proxy_log_dir]:

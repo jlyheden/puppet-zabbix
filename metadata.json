@@ -21,7 +21,7 @@
     "manifests/init.pp": "57014db9bf7bc764f5e96207d944eeb9",
     "manifests/params.pp": "bd77a11b4c29d4fff0db3326687b65d1",
     "manifests/proxy.pp": "58a34f89a97a7dbc2a93f3313e60baf0",
-    "manifests/proxy/config.pp": "39d078223cab4eabf4df1031b21624d9",
+    "manifests/proxy/config.pp": "8bf0a0bd767b86c76d2be8dcac241110",
     "manifests/proxy/package.pp": "b34a94bc2becfaacdce8cee2ed757ae2",
     "manifests/proxy/service.pp": "806b779185d1f288ad6eed7ab4eab27b",
     "manifests/server.pp": "79c6750187d4e0c17686abeee748c8cf",
