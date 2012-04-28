@@ -2,16 +2,16 @@
 
 Server=<%= scope.lookupvar("zabbix::agent::server_host") %>
 ServerPort=<%= scope.lookupvar("zabbix::agent::server_port") %>
-Hostname=<%= hostname %>
+Hostname=<%= scope.lookupvar("@hostname") %>
 ListenPort=<%= scope.lookupvar("zabbix::agent::port") %>
 <%- if scope.lookupvar("zabbix::agent::active_mode") == true -%>
 DisableActive=0
-<%- else - %>
+<%- else -%>
 DisableActive=1
 <%- end -%>
 <%- if scope.lookupvar("zabbix::agent::remote_commands") == true -%>
 EnableRemoteCommands=1
-<%- else - %>
+<%- else -%>
 EnableRemoteCommands=0
 <%- end -%>
 StartAgents=<%= scope.lookupvar("zabbix::agent::startagents") %>

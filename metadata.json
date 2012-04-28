@@ -31,7 +31,7 @@
     "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
     "spec/spec_helper.rb": "ca19ec4f451ebc7fdb035b52eae6e909",
     "templates/agent/1.8/userparameter.erb": "25258576cf8f4ba80a79b941878dbcab",
-    "templates/agent/1.8/zabbix_agentd.conf.erb": "82327e003322b9e9bd8d26131b957a52",
+    "templates/agent/1.8/zabbix_agentd.conf.erb": "f574d62bc9e9a3611f7da4695fdb81f7",
     "templates/frontend/1.8/dbconfig.php.erb": "b2e7d23b7a08ad0f7af07ff6a7843eaa",
     "templates/proxy/1.8/preseed.erb": "05fa5643d2b9c75a1014682228737a82",
     "templates/proxy/1.8/zabbix_proxy.conf.erb": "91cd2395488b09518b04d29b9517a99e",
