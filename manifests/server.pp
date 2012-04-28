@@ -1,7 +1,7 @@
 /*
  * ==:Class zabbix::server
  * 
- * Manages Zabbix server
+ * Installs, configures and manages the Zabbix server service
  * 
  * @params
  * @ensure				String value present or absent
@@ -11,26 +11,28 @@
  * @dbname				String value MySQL db name
  * @dbuser				String value MySQL db user
  * @dbpassword			String value MySQL db password
- * @nodeid				Integer value node id
- * @startpollers		Integer value number of pollers
- * @startipmipollers	Integer value number of ipmipollers
- * @startpollersunreachable	Integer value number of unreachable pollers
- * @starttrappers		Integer value number of trapper pollers
- * @startpingers		Integer value number of ping pollers
- * @startdiscoverers	Integer value number of discover pollers
- * @starthttppollers	Integer value number of web check pollers
- * @housekeepingfrequency	Integer value interval of housekeeping in hours, 0 means disabled
- * @senderfrequency		Integer value sender frequency
+ * @dbrootpassword      String value MySQL db root password if using preseeded installation
+ * @manage_db           Boolean value preseeded installation
+ * @nodeid				Integer value unique NodeID in distributed setup
+ * @startpollers		Integer value number of pre-forked instances of pollers
+ * @startipmipollers	Integer value number of pre-forked instances of IPMI pollers
+ * @startpollersunreachable	Integer value number of pre-forked instances of pollers for unreachable hosts (including IPMI)
+ * @starttrappers		Integer value number of pre-forked instances of trappers
+ * @startpingers		Integer value number of pre-forked instances of ICMP pingers
+ * @startdiscoverers	Integer value number of pre-forked instances of discoverers
+ * @starthttppollers	Integer value number of pre-forked instances of HTTP pollers
+ * @housekeepingfrequency	Integer value how often Zabbix will perform housekeeping procedure (in hours)
+ * @senderfrequency		Integer value how often Zabbix will try to send unsent alerts (in seconds)
  * @housekeeping		Boolean value if house keeping should be enabled
  * @debuglevel			Integer value debuglevel
- * @timeout				Integer value timeout in seconds for item monitoring
- * @trappertimeout		Integer value timeout in seconds for trapper item monitoring
- * @unreachableperiod	Integer value unreachableperiod
- * @unavailabledelay	Integer value unavailabledelay
+ * @timeout				Integer value specifies how long we wait for agent, SNMP device or external check (in seconds)
+ * @trappertimeout		Integer value specifies how many seconds trapper may spend processing new data
+ * @unreachableperiod	Integer value after how many seconds of unreachability treat a host as unavailable
+ * @unavailabledelay	Integer value how often host is checked for availability during the unavailability period, in seconds
  * @logfilesize			Integer value size in megabytes until log file is rotated
  * @tmpdir				String value path to tmp directory
  * @pingerfrequency		Integer value pingerfrequency
- * @cachesize			String value zabbix server cache size, specifiy metric
+ * @cachesize			String value size of configuration cache, in bytes (1K, 1M, 1G etc)
  */
 class zabbix::server ( $ensure = "present",
                        $version = $zabbix::params::version,

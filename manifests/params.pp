@@ -56,6 +56,9 @@
 		}
  	}
 
+	# Defaults
+	$nodename = $::hostname
+	
 	# Zabbix frontend defaults
 	$frontend_dbport = 0
 

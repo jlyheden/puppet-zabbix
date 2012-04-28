@@ -16,6 +16,7 @@
  * @webserver		String value name of webserver service
  */
 class zabbix::frontend ( $ensure = "present",
+                         $nodename = $zabbix::params::nodename,
 	                     $version = $zabbix::params::version,
  	                     $server_host,
  	                     $server_port = $zabbix::params::server_port,

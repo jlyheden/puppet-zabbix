@@ -2,7 +2,7 @@
 
 Server=<%= scope.lookupvar("zabbix::agent::server_host") %>
 ServerPort=<%= scope.lookupvar("zabbix::agent::server_port") %>
-Hostname=<%= scope.lookupvar("@hostname") %>
+Hostname=<%= scope.lookupvar("zabbix::agent::nodename") %>
 ListenPort=<%= scope.lookupvar("zabbix::agent::port") %>
 <%- if scope.lookupvar("zabbix::agent::active_mode") == true -%>
 DisableActive=0

@@ -1,22 +1,24 @@
 /*
  * ==:Class zabbix::agent
  * 
- * Manages Zabbix agent
+ * Installs, configures and manages the Zabbix agent service
  * 
  * @params
  * @ensure			String value present or absent
+ * @nodename        String value name of this Zabbix agent node
  * @version			String value Zabbix version
- * @server_host		String value ip address or hostname of zabbix server
- * @server_port		Integer value port number of zabbix server
- * @startagents		Integer value number of zabbix agent processes
+ * @server_host		String value list of comma delimited IP addresses (or hostnames) of Zabbix servers. No spaces allowed
+ * @server_port		Integer value server port for retrieving list of and sending active checks
+ * @startagents		Integer value number of pre-forked instances of zabbix_agentd that process passive checks
  * @debuglevel		Integer value debuglevel
- * @timeout			Integer value timeout in seconds
- * @port			Integer value listen port for zabbix agent
+ * @timeout			Integer value spend no more than Timeout seconds on processing
+ * @port			Integer value agent will listen on this port for connections from the server
  * @active_mode		Boolean value if active mode should be used
- * @remote_commands	Boolean value if remote commands should be allowed
+ * @remote_commands	Boolean value whether remote commands from Zabbix server are allowed
  * @auto_register	Boolean value if agent should auto register (TODO)
  */
  class zabbix::agent ( $ensure = "present",
+                       $nodename = $zabbix::params::nodename,
                        $version = $zabbix::params::version,
  	                   $server_host,
  	                   $server_port = $zabbix::params::server_port,
