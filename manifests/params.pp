@@ -36,7 +36,6 @@
  			$server_pid_dir = "/var/run/zabbix-server"
  			$server_log_dir = "/var/log/zabbix-server"
  			$server_service = "zabbix-server"
- 			$server_init_has_status = false
  			$server_manage_db = false
  			
  			# Proxy settings
