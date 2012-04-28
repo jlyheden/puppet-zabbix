@@ -1,0 +1,48 @@
+# MANAGED BY PUPPET
+
+NodeID=<%= scope.lookupvar("zabbix::server::nodeid") %>
+
+StartPollers=<%= scope.lookupvar("zabbix::server::startpollers") %>
+StartIPMIPollers=<%= scope.lookupvar("zabbix::server::startipmipollers") %>
+StartPollersUnreachable=<%= scope.lookupvar("zabbix::server::startpollersunreachable") %>
+StartTrappers=<%= scope.lookupvar("zabbix::server::starttrappers") %>
+StartPingers=<%= scope.lookupvar("zabbix::server::startpingers") %>
+StartDiscoverers=<%= scope.lookupvar("zabbix::server::startdiscoverers") %>
+StartHTTPPollers=<%= scope.lookupvar("zabbix::server::starthttppollers") %>
+
+ListenPort=<%= scope.lookupvar("zabbix::server::port") %>
+
+HousekeepingFrequency=<%= scope.lookupvar("zabbix::server::housekeepingfrequency") %>
+SenderFrequency=<%= scope.lookupvar("zabbix::server::senderfrequency") %>
+
+<%- if scope.lookupvar("zabbix::server::housekeeping") == false ->
+DisableHousekeeping=1
+<%- else -%>
+DisableHousekeeping=0
+<%- end -%>
+DebugLevel=<%= scope.lookupvar("zabbix::server::debuglevel") %>
+Timeout=<%= scope.lookupvar("zabbix::server::timeout") %>
+TrapperTimeout=<%= scope.lookupvar("zabbix::server::trappertimeout") %>
+UnreachablePeriod=<%= scope.lookupvar("zabbix::server::unreachableperiod") %>
+UnavailableDelay=<%= scope.lookupvar("zabbix::server::unavailabledelay") %>
+
+PidFile=<%= scope.lookupvar("zabbix::params::server_pid_dir") %>/zabbix_server.pid
+LogFile=<%= scope.lookupvar("zabbix::params::server_log_dir") %>/zabbix_server.log
+LogFileSize=<%= scope.lookupvar("zabbix::server::logfilesize") %>
+AlertScriptsPath=<%= scope.lookupvar("zabbix::params::server_config_alertd_dir") %>/
+ExternalScripts=<%= scope.lookupvar("zabbix::params::server_config_externalscripts_dir") %>
+
+FpingLocation=/usr/bin/fping
+
+# Location of fping6. Default is /usr/sbin/fping6
+# Make sure that fping binary has root permissions and SUID flag set
+#Fping6Location=/usr/sbin/fping6
+
+TmpDir=<%= scope.lookupvar("zabbix::server::tmpdir") %>
+PingerFrequency=<%= scope.lookupvar("zabbix::server::pingerfrequency") %>
+
+DBHost=<%= scope.lookupvar("zabbix::server::dbhost") %>
+DBName=<%= scope.lookupvar("zabbix::server::dbname") %>
+DBUser=<%= scope.lookupvar("zabbix::server::dbuser") %>
+DBPassword=<%= scope.lookupvar("zabbix::server::dbpassword") %>
+CacheSize=<%= scope.lookupvar("zabbix::server::cachesize") %>

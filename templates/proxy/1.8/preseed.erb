@@ -1,0 +1,26 @@
+# MANAGED BY PUPPET
+zabbix-proxy-mysql	zabbix-proxy-mysql/mysql/app-pass	password	<%= scope.lookupvar("zabbix::proxy::dbpassword") %>
+zabbix-proxy-mysql	zabbix-proxy-mysql/mysql/admin-pass	password	<%= scope.lookupvar("zabbix::proxy::dbrootpassword") %>
+zabbix-proxy-mysql	zabbix-proxy-mysql/app-password-confirm	password	<%= scope.lookupvar("zabbix::proxy::dbpassword") %>
+zabbix-proxy-mysql	zabbix-proxy-mysql/password-confirm	password	<%= scope.lookupvar("zabbix::proxy::dbrootpassword") %>
+zabbix-proxy-mysql	zabbix-proxy-mysql/database-type	select	mysql
+zabbix-proxy-mysql	zabbix-proxy-mysql/mysql/admin-user	string	root
+zabbix-proxy-mysql	zabbix-proxy-mysql/upgrade-backup	boolean	true
+zabbix-proxy-mysql	zabbix-proxy-mysql/dbconfig-upgrade	boolean	true
+zabbix-proxy-mysql	zabbix-proxy-mysql/remove-error	select	abort
+zabbix-proxy-mysql	zabbix-proxy-mysql/install-error	select	abort
+zabbix-proxy-mysql	zabbix-proxy-mysql/dbconfig-reinstall	boolean	false
+zabbix-proxy-mysql	zabbix-proxy-mysql/passwords-do-not-match	error	
+zabbix-proxy-mysql	zabbix-proxy-mysql/internal/reconfiguring	boolean	false
+zabbix-proxy-mysql	zabbix-proxy-mysql/mysql/method	select	unix socket
+zabbix-proxy-mysql	zabbix-proxy-mysql/upgrade-error	select	abort
+zabbix-proxy-mysql	zabbix-proxy-mysql/internal/skip-preseed	boolean	false
+zabbix-proxy-mysql	zabbix-proxy-mysql/missing-db-package-error	select	abort
+zabbix-proxy-mysql	zabbix-proxy-mysql/purge	boolean	false
+zabbix-proxy-mysql	zabbix-proxy-mysql/remote/host	select	
+zabbix-proxy-mysql	zabbix-proxy-mysql/dbconfig-install	boolean	true
+zabbix-proxy-mysql	zabbix-proxy-mysql/remote/newhost	string	<%= scope.lookupvar("zabbix::proxy::dbhost") %>
+zabbix-proxy-mysql	zabbix-proxy-mysql/db/app-user	string	<%= scope.lookupvar("zabbix::proxy::dbuser") %>
+zabbix-proxy-mysql	zabbix-proxy-mysql/dbconfig-remove	boolean	
+zabbix-proxy-mysql	zabbix-proxy-mysql/remote/port	string	
+zabbix-proxy-mysql	zabbix-proxy-mysql/db/dbname	string	<%= scope.lookupvar("zabbix::proxy::dbname") %>

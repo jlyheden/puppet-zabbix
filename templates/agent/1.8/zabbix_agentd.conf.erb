@@ -1,0 +1,22 @@
+# MANAGED BY PUPPET
+
+Server=<%= scope.lookupvar("zabbix::agent::server_host") %>
+ServerPort=<%= scope.lookupvar("zabbix::agent::server_port") %>
+Hostname=<%= hostname %>
+ListenPort=<%= scope.lookupvar("zabbix::agent::port") %>
+<%- if scope.lookupvar("zabbix::agent::active_mode") == true -%>
+DisableActive=0
+<%- else - %>
+DisableActive=1
+<%- end -%>
+<%- if scope.lookupvar("zabbix::agent::remote_commands") == true -%>
+EnableRemoteCommands=1
+<%- else - %>
+EnableRemoteCommands=0
+<%- end -%>
+StartAgents=<%= scope.lookupvar("zabbix::agent::startagents") %>
+DebugLevel=<%= scope.lookupvar("zabbix::agent::debuglevel") %>
+PidFile=<%= scope.lookupvar("zabbix::params::agent_pid_dir") %>/zabbix_agentd.pid
+LogFile=<%= scope.lookupvar("zabbix::params::agent_log_dir") %>/zabbix_agentd.log
+Timeout=<%= scope.lookupvar("zabbix::agent::timeout") %>
+Include=<%= scope.lookupvar("zabbix::params::agent_config_include") %>/
