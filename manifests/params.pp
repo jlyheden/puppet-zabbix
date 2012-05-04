@@ -49,7 +49,6 @@
  			# Frontend settings
  			$frontend_config_file = "${config_dir}/dbconfig.php"
  			$frontend_package = "zabbix-frontend-php"
- 			$frontend_webserver = "apache2"
  			$frontend_manage_db = false
  		}
 		default: {

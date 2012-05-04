@@ -17,7 +17,6 @@
  	file { $zabbix::params::frontend_config_file:
  		ensure	=> $zabbix::frontend::ensure,
  		mode	=> 644,
- 		notify	=> Service[$zabbix::frontend::webserver],
  		content	=> template("zabbix/frontend/${zabbix::frontend::version}/dbconfig.php.erb")
  	}
   

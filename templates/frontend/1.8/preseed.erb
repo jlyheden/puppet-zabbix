@@ -2,7 +2,7 @@
 zabbix-frontend-php	zabbix-frontend-php/mysql/app-pass	password	<%= scope.lookupvar("zabbix::frontend::dbpassword") %>
 zabbix-frontend-php	zabbix-frontend-php/password-confirm	password	<%= scope.lookupvar("zabbix::frontend::dbrootpassword") %>
 zabbix-frontend-php	zabbix-frontend-php/mysql/admin-pass	password	<%= scope.lookupvar("zabbix::frontend::dbrootpassword") %>
-zabbix-frontend-php	zabbix-frontend-php/app-password-confirm	password	<%= scope.lookupvar("zabbix::proxy::dbpassword") %>
+zabbix-frontend-php	zabbix-frontend-php/app-password-confirm	password	<%= scope.lookupvar("zabbix::frontend::dbpassword") %>
 zabbix-frontend-php	zabbix-frontend-php/mysql/admin-user	string	root
 zabbix-frontend-php	zabbix-frontend-php/database-type	select	mysql
 zabbix-frontend-php	zabbix-frontend-php/dbconfig-upgrade	boolean	true
