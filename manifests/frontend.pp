@@ -13,6 +13,8 @@
  * @dbname			String value MySQL db name
  * @dbuser			String value MySQL db user
  * @dbpassword		String value MySQL db password
+ * @dbrootpassword  String value MySQL db root password if using preseeded installation
+ * @manage_db       Boolean value preseeded installation
  * @webserver		String value name of webserver service
  */
 class zabbix::frontend ( $ensure = "present",
@@ -25,6 +27,8 @@ class zabbix::frontend ( $ensure = "present",
 	                     $dbname,
 	                     $dbuser,
 	                     $dbpassword,
+	                     $dbrootpassword,
+	                     $manage_db = $zabbix::params::frontend_manage_db,
 	                     $webserver = $zabbix::params::frontend_webserver ) inherits zabbix::params {
 	include zabbix::frontend::package
 	include zabbix::frontend::config

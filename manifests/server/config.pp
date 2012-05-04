@@ -12,25 +12,6 @@ class zabbix::server::config {
  		require	=> Class["zabbix::server::package"]
  	}
 
-	#if !defined(File[$zabbix::params::config_dir]) {
-	# 	file { $zabbix::params::config_dir:
-	# 		ensure	=> $zabbix::server::ensure ? {
-	# 			present	=> directory,
-	# 			default	=> undef
-	# 		},
-	# 		mode	=> 755
-	# 	}
-	#}
-
-	#file { [ $zabbix::params::server_config_alertd_dir, $zabbix::params::server_config_externalscripts_dir]:
-	# 		ensure	=> $zabbix::server::ensure ? {
-	# 			present	=> directory,
-	# 			default	=> undef
-	# 		},
-	# 		mode	=> 755,
-	# 		require	=> File[$zabbix::params::config_dir]
-	#}
-
 	realize ( File[$zabbix::params::config_dir], File[$zabbix::params::alertd_dir], File[$zabbix::params::externalscripts_dir] )
 
 	file { $zabbix::params::server_config_file:

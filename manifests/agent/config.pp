@@ -12,16 +12,6 @@
  		require	=> Class["zabbix::agent::package"]
  	}
 
-	#if !defined(File[$zabbix::params::config_dir]) {
-	# 	file { $zabbix::params::config_dir:
-	# 		ensure	=> $zabbix::agent::ensure ? {
-	# 			present	=> directory,
-	# 			default	=> undef
-	# 		},
-	# 		mode	=> 755
-	# 	}
-	#}
-
  	realize (File[$zabbix::params::config_dir])
  	
  	file { $zabbix::params::agent_config_include:
