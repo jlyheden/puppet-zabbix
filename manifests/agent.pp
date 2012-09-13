@@ -1,35 +1,97 @@
-/*
- * ==:Class zabbix::agent
- * 
- * Installs, configures and manages the Zabbix agent service
- * 
- * @params
- * @ensure			String value present or absent
- * @nodename        String value name of this Zabbix agent node
- * @version			String value Zabbix version
- * @server_host		String value list of comma delimited IP addresses (or hostnames) of Zabbix servers. No spaces allowed
- * @server_port		Integer value server port for retrieving list of and sending active checks
- * @startagents		Integer value number of pre-forked instances of zabbix_agentd that process passive checks
- * @debuglevel		Integer value debuglevel
- * @timeout			Integer value spend no more than Timeout seconds on processing
- * @port			Integer value agent will listen on this port for connections from the server
- * @active_mode		Boolean value if active mode should be used
- * @remote_commands	Boolean value whether remote commands from Zabbix server are allowed
- * @auto_register	Boolean value if agent should auto register (TODO)
- */
- class zabbix::agent ( $ensure = "present",
-                       $nodename = $zabbix::params::nodename,
-                       $version = $zabbix::params::version,
- 	                   $server_host,
- 	                   $server_port = $zabbix::params::server_port,
- 	                   $startagents = $zabbix::params::agent_startagents,
- 	                   $debuglevel = $zabbix::params::agent_debuglevel,
- 	                   $timeout = $zabbix::params::agent_timeout,
- 	                   $port = $zabbix::params::agent_port,
- 	                   $active_mode = $zabbix::params::agent_active_mode,
- 	                   $remote_commands = $zabbix::params::agent_remote_commands,
- 	                   $auto_register = $zabbix::params::agent_auto_register ) inherits zabbix::params {
- 	include zabbix::agent::config
- 	include zabbix::agent::package
- 	include zabbix::agent::service
- }
+# ==: Class zabbix::agent
+#
+# Installs, configures and manages the Zabbix agent service
+#
+# ==: Parameters
+#   [*ensure*]
+#     Deprecated. In place to prevent errors if user sets the parameter
+#
+#   [*nodename*]
+#     Hostname of zabbix agent, defaults to $::hostname
+#     Optional
+#
+#   [*version*]
+#     Zabbix version.
+#     Optional
+#
+#   [*server_host*]
+#     Comma separated list of Zabbix servers
+#     Required
+#
+#   [*server_port*]
+#     Zabbix server port, defaults to default zabbix server port
+#     Optional
+#
+#   [*startagents*]
+#     Number of pre-forked instances to start
+#     Optional
+#
+#   [*debuglevel*]
+#     Numerical debug level
+#     Optional
+#
+#   [*timeout*]
+#     Maximum time in second spent on processing
+#     Optional
+#
+#   [*port*]
+#     Passive listening port for agent
+#     Optional
+#
+#   [*active_mode*]
+#     Boolean if active mode should be enabled.
+#     Optional
+#
+#   [*remote_commands*]
+#     Boolean if remote commands should be allowed
+#     Optional
+#
+#   [*ensure_version*]
+#     Pin package to specific version or ensure latest
+#     Optional
+#
+# ==: Requires
+#
+# ==: Sample Usage
+#
+#   class { "zabbix::agent": ensure => present }
+# 
+class zabbix::agent ( $ensure = "present",
+                      $nodename = $zabbix::params::nodename,
+                      $server_host = $zabbix::params::server_host,
+                      $server_port = $zabbix::params::server_port,
+                      $startagents = $zabbix::params::agent_startagents,
+                      $debuglevel = $zabbix::params::agent_debuglevel,
+                      $timeout = $zabbix::params::agent_timeout,
+                      $port = $zabbix::params::agent_port,
+                      $active_mode = $zabbix::params::agent_active_mode,
+                      $remote_commands = $zabbix::params::agent_remote_commands,
+                      $ensure_version = undef,
+                      $custom_template = undef ) inherits zabbix::params {
+
+    include zabbix
+
+    case $ensure_version {
+    	latest: {
+    		Package["zabbix/agent"] { ensure => latest }
+    	}
+    	/[0-9]+[0-9\.\-\_\:a-zA-Z]/: {
+    		Package["zabbix/agent"] { ensure => $ensure_version }
+    	}
+    	undef: {
+    		# Do nothing
+    	}
+    	default: {
+    		warning("Parameter ensure_version only supports latest, version-number or undef")
+    	}
+    }    
+
+    if $custom_template != undef {
+    	File["zabbix/config/agent/file"] { content => template($custom_template) }
+    }
+
+    File <| tag == [global,agent] |>
+
+    realize(Package["zabbix/agent"], Service["zabbix/agent"], User["user/zabbix"], Group["group/zabbix"])
+
+}

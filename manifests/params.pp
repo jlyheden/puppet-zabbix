@@ -9,7 +9,6 @@
  	case $::operatingsystem {
  		ubuntu: {
 			# Global settings
- 			$version = "1.8"
  			$alertd_dir = "${config_dir}/alert.d"
  			$externalscripts_dir = "${config_dir}/externalscripts"
  			$user = "zabbix"
@@ -73,6 +72,7 @@
 	
 	# Zabbix server defaults	
  	$server_nodeid = 0
+ 	$server_host = "zabbix.${::domain}"
  	$server_port = 10051
  	$server_startpollers = 5
  	$server_startipmipollers = 0
