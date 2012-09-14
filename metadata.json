@@ -16,7 +16,7 @@
     "manifests/frontend.pp": "94a6e91ca6361e380ecf6b444f4d8097",
     "manifests/frontend/config.pp": "8372b0868acd793480c3559ba29ccf75",
     "manifests/frontend/package.pp": "ba90e4c7b6513d10c687be01ce3af375",
-    "manifests/init.pp": "b88526de0e5668c63526ed99a2872a00",
+    "manifests/init.pp": "181b7d72a57a86980e145a231d302ec1",
     "manifests/params.pp": "160ebb5ab8a0361804c56d0dd50899dc",
     "manifests/proxy.pp": "627da7011fb91349650ba23b33a10f40",
     "manifests/proxy/config.pp": "8bf0a0bd767b86c76d2be8dcac241110",
