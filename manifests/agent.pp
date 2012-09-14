@@ -3,11 +3,9 @@
 # Installs, configures and manages the Zabbix agent service
 #
 # ==: Parameters
-#   [*ensure*]
-#     Deprecated. In place to prevent errors if user sets the parameter
 #
 #   [*nodename*]
-#     Hostname of zabbix agent, defaults to $::hostname
+#     Hostname of zabbix agent, defaults to "$::hostname".
 #     Optional
 #
 #   [*version*]
@@ -15,39 +13,51 @@
 #     Optional
 #
 #   [*server_host*]
-#     Comma separated list of Zabbix servers
+#     Comma separated list of Zabbix servers. Defaults to "zabbix.${::domain}".
 #     Required
 #
 #   [*server_port*]
-#     Zabbix server port, defaults to default zabbix server port
+#     Zabbix server port, defaults to default zabbix server port.
 #     Optional
 #
 #   [*startagents*]
-#     Number of pre-forked instances to start
+#     Number of pre-forked instances to start.
 #     Optional
 #
 #   [*debuglevel*]
-#     Numerical debug level
+#     Numerical debug level.
 #     Optional
 #
 #   [*timeout*]
-#     Maximum time in second spent on processing
+#     Maximum time in second spent on processing.
 #     Optional
 #
 #   [*port*]
-#     Passive listening port for agent
+#     Passive listening port for agent. Defaults to default agent port.
 #     Optional
 #
 #   [*active_mode*]
-#     Boolean if active mode should be enabled.
+#     Boolean if active mode should be enabled. Defaults to true.
 #     Optional
 #
 #   [*remote_commands*]
-#     Boolean if remote commands should be allowed
+#     Boolean if remote commands should be allowed.
 #     Optional
 #
 #   [*ensure_version*]
-#     Pin package to specific version or ensure latest
+#     Pin package to specific version or ensure latest.
+#     Optional
+#
+#   [*custom_template*]
+#     Custom zabbix_agentd.conf template use.
+#     Optional
+#
+#   [*zabbix_uid*]
+#     Numerical UID for zabbix user to use.
+#     Optional
+#
+#   [*zabbix_gid*]
+#     Numerical GID for zabbix user to use.
 #     Optional
 #
 # ==: Requires
@@ -56,8 +66,7 @@
 #
 #   class { "zabbix::agent": ensure => present }
 # 
-class zabbix::agent ( $ensure = "present",
-                      $nodename = $zabbix::params::nodename,
+class zabbix::agent ( $nodename = $zabbix::params::nodename,
                       $server_host = $zabbix::params::server_host,
                       $server_port = $zabbix::params::server_port,
                       $startagents = $zabbix::params::agent_startagents,
@@ -70,7 +79,9 @@ class zabbix::agent ( $ensure = "present",
                       $custom_template = undef,
                       $zabbix_uid = $zabbix::params::uid,
                       $zabbix_gid = $zabbix::params::gid ) inherits zabbix {
+
     include zabbix::params
+
     case $ensure_version {
     	latest: {
     		Package["zabbix/agent/package"] { ensure => latest }
