@@ -1,9 +1,5 @@
-/*
- * ==:Class zabbix::params
- * 
- * Parameter class with default values
- */
- class zabbix::params {
+# Params class for zabbix
+class zabbix::params {
  	
  	# OS dependent settings
  	case $::operatingsystem {
@@ -13,8 +9,6 @@
  			$externalscripts_dir = "${config_dir}/externalscripts"
  			$user = "zabbix"
  			$group = "zabbix"
-      $uid = 120 
-      $gid = 120
  			$config_dir = "/etc/zabbix"
  			$agent_hasstatus = true
  			$server_hasstatus = false

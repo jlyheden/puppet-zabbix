@@ -1,12 +1,12 @@
-# ==: Class zabbix
+# == Class zabbix
 #
 # Installs, configures and manages Zabbix
 #
-# ==: Parameters
+# === Parameters
 #
-# ==: Requires
+# === Requires
 #
-# ==: Sample Usage
+# === Sample Usage
 #
 #   Don't access this class directly, instead use classes zabbix::agent, zabbix::proxy, zabbix::frontend or zabbix::server
 # 

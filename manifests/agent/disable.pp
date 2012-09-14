@@ -1,5 +1,5 @@
-class zabbix::agent::disable inherits zabbix::agent {
-    Service["zabbix/agent/service"] {
+class zabbix::agent::disable inherits zabbix {
+    Service['zabbix/agent/service'] {
         ensure => undef,
         enable => false
     }
