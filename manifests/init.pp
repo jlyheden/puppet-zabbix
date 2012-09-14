@@ -17,7 +17,7 @@ class zabbix inherits zabbix::params {
             tag     => [agent,server,proxy],
             path    => $zabbix::params::config_dir,
             ensure	=> directory,
-            mode	=> 755;
+            mode	  => 755;
         "zabbix/server/config/alert/dir":
             tag     => server,
             path    => $zabbix::params::alertd_dir,
