@@ -1,0 +1,6 @@
+# MANAGED BY PUPPET
+<%- if parameters == false -%>
+UserParameter=<%= name %>,<%= command %>
+<%- else -%>
+UserParameter=<%= name %>[*],<%= command %>
+<%- end -%>

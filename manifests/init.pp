@@ -14,27 +14,36 @@ class zabbix inherits zabbix::params {
 
     @file {
         "zabbix/config/dir":
-            tag     => global,
+            tag     => [agent,server,proxy],
             path    => $zabbix::params::config_dir,
             ensure	=> directory,
             mode	=> 755;
-        "zabbix/config/server/alert/dir":
+        "zabbix/server/config/alert/dir":
             tag     => server,
             path    => $zabbix::params::alertd_dir,
             ensure  => directory,
             mode    => 755;
-        "zabbix/config/server/externalscripts/dir":
+        "zabbix/server/config/externalscripts/dir":
             tag     => server,
             path    => $zabbix::params::externalscripts_dir,
             ensure  => directory,
             mode    => 755;
-        "zabbix/config/agent/file":
+        "zabbix/agent/config/file":
             tag     => agent,
             path    => $zabbix::params::agent_config_file,
-            ensure  => file,
+            ensure  => present,
             mode    => 644,
-            notify  => Service["zabbix/agent"],
-            require => [ Package["zabbix/agent"], Service["zabbix/agent"] ];
+            notify  => Service["zabbix/agent/service"],
+            require => Package["zabbix/agent/package"];
+        "zabbix/agent/config/include/dir":
+            tag     => agent,
+            path    => $zabbix::params::agent_config_include,
+            ensure  => directory,
+            force   => true,
+            purge   => true,
+            recurse => true,
+            notify  => Service["zabbix/agent/service"],
+            mode    => 755;
         "zabbix/agent/pid/dir":
             tag     => agent,
             path    => $zabbix::params::agent_pid_dir,
@@ -52,46 +61,48 @@ class zabbix inherits zabbix::params {
     }
 
     @package {
-        "zabbix/agent":
+        "zabbix/agent/package":
             ensure  => present,
             name    => $zabbix::params::agent_package;
-        "zabbix/server":
+        "zabbix/server/package":
             ensure  => present,
             name    => $zabbix::params::server_package;
-        "zabbix/proxy":
+        "zabbix/proxy/package":
             ensure  => present,
             name    => $zabbix::params::proxy_package
     }
 
     @service {
-        "zabbix/agent":
+        "zabbix/agent/service":
             ensure  => running,
             enable  => true,
-            name    => $zabbix::params::agent_service;
-        "zabbix/server":
+            hasstatus => $zabbix::params::agent_hasstatus,
+            name    => $zabbix::params::agent_service,
+            require => Package["zabbix/agent/package"]; 
+        "zabbix/server/service":
             ensure  => running,
             enable  => true,
-            name    => $zabbix::params::server_service;
-        "zabbix/proxy":
+            name    => $zabbix::params::server_service,
+            require => Package["zabbix/server/package"]; 
+        "zabbix/proxy/service":
             ensure  => running,
             enable  => true,
-            name    => $zabbix::params::proxy_service;
+            name    => $zabbix::params::proxy_service,
+            require => Package["zabbix/proxy/package"]; 
     }
 
-    @user { "user/zabbix":
+    @user { "zabbix/user":
         ensure      => present,
         name        => $zabbix::params::user,
-        system      => true,
-        shell       => false,
+        shell       => "/bin/false",
         managehome  => false,
         home        => "/home/${zabbix::params::user}",
         gid         => $zabbix::params::group
     }
 
-    @group { "group/zabbix":
+    @group { "zabbix/group":
     	ensure     => present,
     	name       => $zabbix::params::group,
-    	system     => true
     }
 
 }

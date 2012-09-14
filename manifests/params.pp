@@ -13,10 +13,12 @@
  			$externalscripts_dir = "${config_dir}/externalscripts"
  			$user = "zabbix"
  			$group = "zabbix"
+      $uid = 120 
+      $gid = 120
  			$config_dir = "/etc/zabbix"
- 			$agent_init_has_status = false
- 			$server_init_has_status = false
- 			$proxy_init_has_status = false
+ 			$agent_hasstatus = true
+ 			$server_hasstatus = false
+ 			$proxy_hasstatus = false
  			$mysql_package = "mysql-server-5.1"
  			
  			# Agent settings

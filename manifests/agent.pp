@@ -67,31 +67,37 @@ class zabbix::agent ( $ensure = "present",
                       $active_mode = $zabbix::params::agent_active_mode,
                       $remote_commands = $zabbix::params::agent_remote_commands,
                       $ensure_version = undef,
-                      $custom_template = undef ) inherits zabbix::params {
-
-    include zabbix
-
+                      $custom_template = undef,
+                      $zabbix_uid = $zabbix::params::uid,
+                      $zabbix_gid = $zabbix::params::gid ) inherits zabbix {
+    include zabbix::params
     case $ensure_version {
     	latest: {
-    		Package["zabbix/agent"] { ensure => latest }
+    		Package["zabbix/agent/package"] { ensure => latest }
     	}
     	/[0-9]+[0-9\.\-\_\:a-zA-Z]/: {
-    		Package["zabbix/agent"] { ensure => $ensure_version }
+    		Package["zabbix/agent/package"] { ensure => $ensure_version }
     	}
     	undef: {
     		# Do nothing
     	}
     	default: {
-    		warning("Parameter ensure_version only supports latest, version-number or undef")
+    		warning("Parameter ensure_version only supports values: latest, version-number or undef")
     	}
     }    
 
-    if $custom_template != undef {
-    	File["zabbix/config/agent/file"] { content => template($custom_template) }
+    File["zabbix/agent/config/file"] {
+      content => $custom_template ? {
+        undef   => template('zabbix/agent/zabbix_agentd.conf.erb'),
+        default => template($custom_template),
+      }
     }
 
-    File <| tag == [global,agent] |>
+    User["zabbix/user"] { uid => $zabbix_uid }
+    Group["zabbix/group"] { gid => $zabbix_gid }
 
-    realize(Package["zabbix/agent"], Service["zabbix/agent"], User["user/zabbix"], Group["group/zabbix"])
+    File <| tag == "agent" |>
+
+    Group <| title == "zabbix/group" |> -> User <| title == "zabbix/user" |> -> Package <| title == "zabbix/agent/package" |> -> Service <| title == "zabbix/agent/service" |>
 
 }
