@@ -38,10 +38,10 @@
 #   Optional. Custom zabbix_agentd.conf template use. Default: undef
 #
 # [*zabbix_uid*]
-#   Optional. Numerical UID for zabbix user to use. Default: undef
+#   Optional. Numerical UID for zabbix user to use. If undef a random UID will be used. Default: undef
 #
 # [*zabbix_gid*]
-#   Optional. Numerical GID for zabbix user to use. Default: undef
+#   Optional. Numerical GID for zabbix user to use. If undef a random GID will be used. Default: undef
 #
 # === Requires
 #
@@ -58,19 +58,19 @@ class zabbix::agent ( $nodename = $zabbix::params::nodename,
                       $port = $zabbix::params::agent_port,
                       $active_mode = $zabbix::params::agent_active_mode,
                       $remote_commands = $zabbix::params::agent_remote_commands,
-                      $ensure_version = undef,
+                      $autoupgrade = undef,
                       $custom_template = undef,
                       $zabbix_uid = undef,
                       $zabbix_gid = undef ) inherits zabbix {
 
     include zabbix::params
 
-    case $ensure_version {
+    case $autoupgrade {
     	latest: {
     		Package['zabbix/agent/package'] { ensure => latest }
     	}
     	/[0-9]+[0-9\.\-\_\:a-zA-Z]/: {
-    		Package['zabbix/agent/package'] { ensure => $ensure_version }
+    		Package['zabbix/agent/package'] { ensure => $autoupgrade }
     	}
     	undef: {
     		# Do nothing
@@ -90,7 +90,7 @@ class zabbix::agent ( $nodename = $zabbix::params::nodename,
     User['zabbix/user'] { uid => $zabbix_uid }
     Group['zabbix/group'] { gid => $zabbix_gid }
 
-    File <| tag == 'agent' |>
+    File <| tag == agent |>
 
     Group <| title == 'zabbix/group' |> -> User <| title == 'zabbix/user' |> -> Package <| title == 'zabbix/agent/package' |> -> Service <| title == 'zabbix/agent/service' |>
 

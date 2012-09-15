@@ -33,37 +33,77 @@
  * @tmpdir				String value path to tmp directory
  * @pingerfrequency		Integer value pingerfrequency
  * @cachesize			String value size of configuration cache, in bytes (1K, 1M, 1G etc)
+ * @autoupgrade   Boolean, version or 
  */
 class zabbix::server ( $ensure = "present",
                        $version = $zabbix::params::version,
-	                   $port = $zabbix::params::server_port,
-	                   $dbhost,
-	                   $dbname,
-	                   $dbuser,
-	                   $dbpassword,
-	                   $dbrootpassword = "",
-	                   $manage_db = $zabbix::params::server_manage_db,
-	                   $nodeid = $zabbix::params::server_nodeid,
-	                   $startpollers = $zabbix::params::server_startpollers,
-	                   $startipmipollers = $zabbix::params::server_startipmipollers,
-	                   $startpollersunreachable = $zabbix::params::server_startpollersunreachable,
-	                   $starttrappers = $zabbix::params::server_starttrappers,
-	                   $startpingers = $zabbix::params::server_startpingers,
-	                   $startdiscoverers = $zabbix::params::server_startdiscoverers,
-	                   $starthttppollers = $zabbix::params::server_starthttppollers,
-	                   $housekeepingfrequency = $zabbix::params::server_housekeepingfrequency,
-	                   $senderfrequency = $zabbix::params::server_senderfrequency,
-	                   $housekeeping = $zabbix::params::server_housekeeping,
-	                   $debuglevel = $zabbix::params::server_debuglevel,
-	                   $timeout = $zabbix::params::server_timeout,
-	                   $trappertimeout = $zabbix::params::server_trappertimeout,
-	                   $unreachableperiod = $zabbix::params::server_unreachableperiod,
-	                   $unavailabledelay = $zabbix::params::server_unavailabledelay,
-	                   $logfilesize = $zabbix::params::server_logfilesize,
-	                   $tmpdir = $zabbix::params::server_tmpdir,
-	                   $pingerfrequency = $zabbix::params::server_pingerfrequency,
-	                   $cachesize = $zabbix::params::server_cachesize ) inherits zabbix::params {
-	include zabbix::server::config
-	include zabbix::server::package
-	include zabbix::server::service
+                       $port = $zabbix::params::server_port,
+                       $dbhost,
+                       $dbname,
+                       $dbuser,
+                       $dbpassword,
+                       $dbrootpassword = undef,
+                       $managedb = $zabbix::params::server_managedb,
+                       $nodeid = $zabbix::params::server_nodeid,
+                       $startpollers = $zabbix::params::server_startpollers,
+                       $startipmipollers = $zabbix::params::server_startipmipollers,
+                       $startpollersunreachable = $zabbix::params::server_startpollersunreachable,
+                       $starttrappers = $zabbix::params::server_starttrappers,
+                       $startpingers = $zabbix::params::server_startpingers,
+                       $startdiscoverers = $zabbix::params::server_startdiscoverers,
+                       $starthttppollers = $zabbix::params::server_starthttppollers,
+                       $housekeepingfrequency = $zabbix::params::server_housekeepingfrequency,
+                       $senderfrequency = $zabbix::params::server_senderfrequency,
+                       $housekeeping = $zabbix::params::server_housekeeping,
+                       $debuglevel = $zabbix::params::server_debuglevel,
+                       $timeout = $zabbix::params::server_timeout,
+                       $trappertimeout = $zabbix::params::server_trappertimeout,
+                       $unreachableperiod = $zabbix::params::server_unreachableperiod,
+                       $unavailabledelay = $zabbix::params::server_unavailabledelay,
+                       $logfilesize = $zabbix::params::server_logfilesize,
+                       $tmpdir = $zabbix::params::server_tmpdir,
+                       $pingerfrequency = $zabbix::params::server_pingerfrequency,
+                       $cachesize = $zabbix::params::server_cachesize,
+                       $autoupgrade = undef,
+                       $custom_template = undef
+ ) inherits zabbix {
+
+    include zabbix::params
+
+    case $autoupgrade {
+      latest: {
+        Package['zabbix/server/package'] { ensure => latest }
+      }
+      /[0-9]+[0-9\.\-\_\:a-zA-Z]/: {
+        Package['zabbix/server/package'] { ensure => $autoupgrade }
+      }
+      undef: {
+        # Do nothing
+      }
+      default: {
+        warning('Parameter ensure_version only supports values: latest, version-number or undef')
+      }
+    }
+
+    File['zabbix/server/config/file'] {
+      content => $custom_template ? {
+        undef   => template('zabbix/server/zabbix_server.conf.erb'),
+        default => template($custom_template),
+      }
+    }
+
+    if $managedb == true {
+      if $dbrootpassword == undef {
+        fail('You must set dbrootpassword when managedb is set to true')
+      }
+      File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb'), before  => Package['mysql/packages'] }
+      File['zabbix/server/preseed'] { ensure => present, content => template('zabbix/server/preseed.erb') }
+      Package['mysql/packages'] { before +> Package['zabbix/server/package'] }
+      Package['zabbix/server/package'] { responsefile => $zabbix::params::server_preseed_file }
+      realize(Package['mysql/packages'])
+    }
+
+    File <| tag == server |>
+    Group <| title == 'zabbix/group' |> -> User <| title == 'zabbix/user' |> -> Package <| title == 'zabbix/server/package' |> -> Service <| title == 'zabbix/server/service' |>
+
 }

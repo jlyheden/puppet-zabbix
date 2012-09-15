@@ -33,6 +33,7 @@ define zabbix::agent::userparameter ( $command = undef,
 
  	file { "zabbix/agent/config/include/${name}":
  		ensure	=> present,
+    tag     => agent,
     path    => "${zabbix::params::agent_config_include}/${filename}.conf",
  		owner	  => $zabbix::params::user,
  		group	  => $zabbix::params::group,

@@ -1,19 +1,34 @@
 # Params class for zabbix
+# Put whatever hooks for extlookup / hiera here
 class zabbix::params {
  	
  	# OS dependent settings
  	case $::operatingsystem {
  		ubuntu: {
 			# Global settings
- 			$alertd_dir = "${config_dir}/alert.d"
- 			$externalscripts_dir = "${config_dir}/externalscripts"
  			$user = "zabbix"
  			$group = "zabbix"
  			$config_dir = "/etc/zabbix"
- 			$agent_hasstatus = true
- 			$server_hasstatus = false
- 			$proxy_hasstatus = false
- 			$mysql_package = "mysql-server-5.1"
+ 			$alertd_dir = "${config_dir}/alert.d"
+ 			$externalscripts_dir = "${config_dir}/externalscripts"
+
+      # hasstatus doesnt work in puppet 2.6.x (throws Could not run Puppet configuration client: Could not find init script for 'zabbix-server') when running no-install-recommends in ubuntu
+      # https://github.com/duritong/puppet-nagios/issues/2#issuecomment-3095829
+ 			$agent_hasstatus = $::puppetversion ? {
+        /2\.6\.2/ => undef,
+        default   => true,
+      }
+ 			$server_hasstatus = $::puppetversion ? {
+        /2\.6\.2/ => undef,
+        default   => true,
+      }
+ 			$proxy_hasstatus = $::puppetversion ? {
+        /2\.6\.2/ => undef,
+        default   => true,
+      }
+
+ 			$mysql_packages = [ 'mysql-client-5.1', 'mysql-common', 'mysql-server-5.1', 'mysql-server', 'dbconfig-common' ]
+      $mysql_preseed_file = '/var/local/mysql.preseed'
  			
  			# Agent settings
  			$agent_package = "zabbix-agent"
@@ -24,6 +39,8 @@ class zabbix::params {
  			$agent_log_dir = "/var/log/zabbix-agent"
  			
  			# Server settings
+      # Note: in order for non-interactive installs to not permanently fail in Lucid it is necessary to install dbconfig-common from lucid-proposed
+      # https://bugs.launchpad.net/ubuntu/+source/dbconfig-common/+bug/800543
  			$server_package = "zabbix-server-mysql"
  			$server_php_package = "zabbix-frontend-php"
  			$server_config_file = "${config_dir}/zabbix_server.conf"
@@ -31,7 +48,8 @@ class zabbix::params {
  			$server_pid_dir = "/var/run/zabbix-server"
  			$server_log_dir = "/var/log/zabbix-server"
  			$server_service = "zabbix-server"
- 			$server_manage_db = false
+ 			$server_managedb = false
+      $server_preseed_file = '/var/local/zabbix-server.preseed'
  			
  			# Proxy settings
  			$proxy_package = "zabbix-proxy-mysql"

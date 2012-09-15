@@ -15,7 +15,7 @@ ListenPort=<%= scope.lookupvar("zabbix::server::port") %>
 HousekeepingFrequency=<%= scope.lookupvar("zabbix::server::housekeepingfrequency") %>
 SenderFrequency=<%= scope.lookupvar("zabbix::server::senderfrequency") %>
 
-<%- if scope.lookupvar("zabbix::server::housekeeping") == false ->
+<%- if scope.lookupvar("zabbix::server::housekeeping") == false -%>
 DisableHousekeeping=1
 <%- else -%>
 DisableHousekeeping=0
