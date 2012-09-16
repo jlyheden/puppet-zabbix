@@ -32,7 +32,7 @@
 #   Optional. Boolean if remote commands should be allowed. Default: true
 #
 # [*autoupgrade*]
-#   Optional. Boolean or specific version to install. Default: undef
+#   Optional. Boolean to automatically install latest version or pin to specific version. Default: false
 #
 # [*custom_template*]
 #   Optional. Custom zabbix_agentd.conf template use. Default: undef
@@ -47,7 +47,15 @@
 #
 # === Sample Usage
 #
-# class { "zabbix::agent": ensure => present }
+# include zabbix::agent
+#
+#   or
+#
+# class { 'zabbix-agent':
+#   nodename    => 'my-different-than $::hostname hostname',
+#   server_host => 'my-custom-zabbix-server',
+#   active_mode => false
+# }
 #
 class zabbix::agent ( $nodename = $zabbix::params::nodename,
                       $server_host = $zabbix::params::server_host,
@@ -58,7 +66,7 @@ class zabbix::agent ( $nodename = $zabbix::params::nodename,
                       $port = $zabbix::params::agent_port,
                       $active_mode = $zabbix::params::agent_active_mode,
                       $remote_commands = $zabbix::params::agent_remote_commands,
-                      $autoupgrade = undef,
+                      $autoupgrade = $zabbix::params::agent_autoupgrade,
                       $custom_template = undef,
                       $zabbix_uid = undef,
                       $zabbix_gid = undef ) inherits zabbix {
@@ -66,17 +74,17 @@ class zabbix::agent ( $nodename = $zabbix::params::nodename,
     include zabbix::params
 
     case $autoupgrade {
-    	latest: {
+    	true: {
     		Package['zabbix/agent/package'] { ensure => latest }
     	}
     	/[0-9]+[0-9\.\-\_\:a-zA-Z]/: {
     		Package['zabbix/agent/package'] { ensure => $autoupgrade }
     	}
-    	undef: {
+    	false: {
     		# Do nothing
     	}
     	default: {
-    		warning('Parameter ensure_version only supports values: latest, version-number or undef')
+    		warning('Parameter autoupgrade only supports values: true, false or version-number')
     	}
     }
 
