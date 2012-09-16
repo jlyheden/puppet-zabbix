@@ -1,43 +1,108 @@
-/*
- * ==:Class zabbix::server
- * 
- * Installs, configures and manages the Zabbix server service
- * 
- * @params
- * @ensure				String value present or absent
- * @version				String value Zabbix version
- * @port				Integer value listen port
- * @dbhost				String value MySQL db server
- * @dbname				String value MySQL db name
- * @dbuser				String value MySQL db user
- * @dbpassword			String value MySQL db password
- * @dbrootpassword      String value MySQL db root password if using preseeded installation
- * @manage_db           Boolean value preseeded installation
- * @nodeid				Integer value unique NodeID in distributed setup
- * @startpollers		Integer value number of pre-forked instances of pollers
- * @startipmipollers	Integer value number of pre-forked instances of IPMI pollers
- * @startpollersunreachable	Integer value number of pre-forked instances of pollers for unreachable hosts (including IPMI)
- * @starttrappers		Integer value number of pre-forked instances of trappers
- * @startpingers		Integer value number of pre-forked instances of ICMP pingers
- * @startdiscoverers	Integer value number of pre-forked instances of discoverers
- * @starthttppollers	Integer value number of pre-forked instances of HTTP pollers
- * @housekeepingfrequency	Integer value how often Zabbix will perform housekeeping procedure (in hours)
- * @senderfrequency		Integer value how often Zabbix will try to send unsent alerts (in seconds)
- * @housekeeping		Boolean value if house keeping should be enabled
- * @debuglevel			Integer value debuglevel
- * @timeout				Integer value specifies how long we wait for agent, SNMP device or external check (in seconds)
- * @trappertimeout		Integer value specifies how many seconds trapper may spend processing new data
- * @unreachableperiod	Integer value after how many seconds of unreachability treat a host as unavailable
- * @unavailabledelay	Integer value how often host is checked for availability during the unavailability period, in seconds
- * @logfilesize			Integer value size in megabytes until log file is rotated
- * @tmpdir				String value path to tmp directory
- * @pingerfrequency		Integer value pingerfrequency
- * @cachesize			String value size of configuration cache, in bytes (1K, 1M, 1G etc)
- * @autoupgrade   Boolean, version or 
- */
-class zabbix::server ( $ensure = "present",
-                       $version = $zabbix::params::version,
-                       $port = $zabbix::params::server_port,
+# == Class zabbix::server
+#
+# Installs, configures and manages the Zabbix server service
+#
+# === Parameters
+#
+# [*port*]
+#   Optional. Listening port for Zabbix Server. Default: 10051
+#
+# [*dbhost*]
+#   Required. IP or hostname of database server.
+#
+# [*dbname*]
+#   Optional. Name of database. Default: zabbix
+#
+# [*dbuser*]
+#   Optional. Name of database user. Default: zabbix
+#
+# [*dbpassword*]
+#   Required. Password for database user.
+#
+# [*dbrootpassword*]
+#   Required if managedb is enabled. MySQL root password.
+#
+# [*managedb*]
+#   Optional. If zabbix-server installation should pull mysql-server from pkg repository and install it. Note this might conflict with other MySQL modules. Default: false
+#
+# [*nodeid*]
+#   Optional. NodeID in distributed setup. Default: 0
+#
+# [*startpollers*]
+#   Optional. Number of pre-forked instances of poller. Default: 5
+#
+# [*startipmipollers*]
+#   Optional. Number of pre-forked instances of IPMI poller. Default: 0
+#
+# [*startpollersunreachable*]
+#   Optional. Number of pre-forked instances of poller for unreachable hosts (including IPMI). Default: 1
+#
+# [*starttrappers*]
+#   Optional. Number of pre-forked instances of trapper. Default: 5
+#
+# [*startpingers*]
+#   Optional. Number of pre-forked instances of pinger. Default: 1
+#
+# [*startdiscovers*]
+#   Optional. Number of pre-forked instances of discover. Default: 1
+#
+# [*starthttppollers*]
+#   Optional. Number of pre-forked instances of web check. Default: 1
+#
+# [*housekeepingfrequency*]
+#   Optional. Interval in hours, at which housekeeping will be performed. Default: 1
+#
+# [*senderfrequency*]
+#   Optional. Interval in seconds, at which Zabbix will retry to send unsent alerts. Default: 30
+#
+# [*housekeeping*]
+#   Optional. Boolean if housekeeping should be enabled. Default: true
+#
+# [*debuglevel*]
+#   Optional. Numerical log verbosity. Default: 3
+#
+# [*timeout*]
+#   Optional. Timeout in seconds, waiting for agent, SNMP or external check. Default: 5
+#
+# [*trappertimeout*]
+#   Optional. Timeout in seconds, how many seconds trapper may process new data. Default: 5
+#
+# [*unreachableperiod*]
+#   Optional. Period in seconds, after how long time a host is set as unreachable. Default: 45
+#
+# [*unavailabledelay*]
+#   Optional. Delay in seconds, how often host is checked for avaibility during the unavailability period. Default: 60
+#
+# [*logfilesize*]
+#   Optional. Size in MB after which the daemon log file will be rotated. Default: 10
+#
+# [*tmpdir*]
+#   Optional. Path to temp directory. Default: /tmp
+#
+# [*pingerfrequency*]
+#   Optional. Frequency in seconds. Default: 60
+#
+# [*cachesize*]
+#   Optional. Size of configuration cache in bytes. Supports metric prefixes. Default: 8M
+#
+# [*autoupgrade*]
+#   Optional. Boolean to automatically install latest version or pin to specific version. Default: false
+#
+# [*custom_template*]
+#   Optional. Path to template file to use in place for zabbix_server.conf. Default: undef
+#
+# === Requires
+#
+# === Sample Usage
+#
+# class { 'zabbix-server':
+#   dbhost          => 'localhost',
+#   dbpassword      => 'secretzabbixpw'
+#   dbrootpassword  => 'omgmysqlrootpw',
+#   managedb        => true
+# }
+#
+class zabbix::server ( $port = $zabbix::params::server_port,
                        $dbhost,
                        $dbname,
                        $dbuser,
@@ -64,24 +129,23 @@ class zabbix::server ( $ensure = "present",
                        $tmpdir = $zabbix::params::server_tmpdir,
                        $pingerfrequency = $zabbix::params::server_pingerfrequency,
                        $cachesize = $zabbix::params::server_cachesize,
-                       $autoupgrade = undef,
-                       $custom_template = undef
- ) inherits zabbix {
+                       $autoupgrade = $zabbix::params::server_autoupgrade,
+                       $custom_template = undef ) inherits zabbix {
 
     include zabbix::params
 
     case $autoupgrade {
-      latest: {
+      true: {
         Package['zabbix/server/package'] { ensure => latest }
       }
       /[0-9]+[0-9\.\-\_\:a-zA-Z]/: {
         Package['zabbix/server/package'] { ensure => $autoupgrade }
       }
-      undef: {
+      false: {
         # Do nothing
       }
       default: {
-        warning('Parameter ensure_version only supports values: latest, version-number or undef')
+        warning('Parameter autoupgrade only supports values: true, false or version-number')
       }
     }
 
