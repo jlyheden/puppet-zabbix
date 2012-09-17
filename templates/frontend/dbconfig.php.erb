@@ -3,13 +3,13 @@
 global $DB;
 
 $DB["TYPE"]      = "mysql";
-$DB["SERVER"]    = "<%= scope.lookupvar("zabbix::frontend::dbhost") %>";
-$DB["PORT"]      = "<%= scope.lookupvar("zabbix::frontend::dbport") %>";
-$DB["DATABASE"]  = "<%= scope.lookupvar("zabbix::frontend::dbname") %>";
-$DB["USER"]      = "<%= scope.lookupvar("zabbix::frontend::dbuser") %>";
-$DB["PASSWORD"]  = "<%= scope.lookupvar("zabbix::frontend::dbpassword") %>";
-$ZBX_SERVER      = "<%= scope.lookupvar("zabbix::frontend::server_host") %>";
-$ZBX_SERVER_PORT = "<%= scope.lookupvar("zabbix::frontend::server_port") %>";
+$DB["SERVER"]    = "<%= dbhost %>";
+$DB["PORT"]      = "<%= dbport %>";
+$DB["DATABASE"]  = "<%= dbname %>";
+$DB["USER"]      = "<%= dbuser %>";
+$DB["PASSWORD"]  = "<%= dbpassword %>";
+$ZBX_SERVER      = "<%= server_host %>";
+$ZBX_SERVER_PORT = "<%= server_port %>";
 
 $IMAGE_FORMAT_DEFAULT    = IMAGE_FORMAT_PNG;
 

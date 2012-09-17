@@ -63,7 +63,9 @@ class zabbix::params {
             # Frontend settings
             $frontend_config_file = "${config_dir}/dbconfig.php"
             $frontend_package = 'zabbix-frontend-php'
-            $frontend_manage_db = false
+            $frontend_preseed_file = '/var/local/zabbix-frontend.preseed'
+            $frontend_managedb = false
+            $frontend_apacheservice_reload_cmd = 'service apache2 reload'
         }
         default: {
             fail("Operating system $::operatingsystem not supported")
@@ -75,6 +77,7 @@ class zabbix::params {
 
     # Zabbix frontend defaults
     $frontend_dbport = 0
+    $frontend_autoupgrade = false
 
     # Zabbix agent defaults
     $agent_port = 10050

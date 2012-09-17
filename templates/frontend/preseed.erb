@@ -1,25 +1,7 @@
 # MANAGED BY PUPPET
-zabbix-frontend-php	zabbix-frontend-php/mysql/app-pass	password	<%= scope.lookupvar("zabbix::frontend::dbpassword") %>
-zabbix-frontend-php	zabbix-frontend-php/password-confirm	password	<%= scope.lookupvar("zabbix::frontend::dbrootpassword") %>
-zabbix-frontend-php	zabbix-frontend-php/mysql/admin-pass	password	<%= scope.lookupvar("zabbix::frontend::dbrootpassword") %>
-zabbix-frontend-php	zabbix-frontend-php/app-password-confirm	password	<%= scope.lookupvar("zabbix::frontend::dbpassword") %>
-zabbix-frontend-php	zabbix-frontend-php/mysql/admin-user	string	root
-zabbix-frontend-php	zabbix-frontend-php/database-type	select	mysql
-zabbix-frontend-php	zabbix-frontend-php/dbconfig-upgrade	boolean	true
-zabbix-frontend-php	zabbix-frontend-php/mysql/method	select	unix socket
-zabbix-frontend-php	zabbix-frontend-php/upgrade-error	select	abort
-zabbix-frontend-php	zabbix-frontend-php/upgrade-backup	boolean	true
-zabbix-frontend-php	zabbix-frontend-php/restart-webserver	boolean	true
-zabbix-frontend-php	zabbix-frontend-php/zabbix-server	string	<%= scope.lookupvar("zabbix::frontend::server_host") %>
-zabbix-frontend-php	zabbix-frontend-php/internal/reconfiguring	boolean	false
-zabbix-frontend-php	zabbix-frontend-php/db/app-user	string	<%= scope.lookupvar("zabbix::frontend::dbuser") %>
-zabbix-frontend-php	zabbix-frontend-php/install-error	select	abort
-zabbix-frontend-php	zabbix-frontend-php/zabbix-server-port	string	<%= scope.lookupvar("zabbix::frontend::server_port") %>
-zabbix-frontend-php	zabbix-frontend-php/dbconfig-install	boolean	true
-zabbix-frontend-php	zabbix-frontend-php/db/dbname	string	<%= scope.lookupvar("zabbix::frontend::dbname") %>
-zabbix-frontend-php	zabbix-frontend-php/remove-error	select	abort
-zabbix-frontend-php	zabbix-frontend-php/reconfigure-webserver	multiselect	apache, apache-ssl, apache-perl, apache2
-zabbix-frontend-php	zabbix-frontend-php/dbconfig-reinstall	boolean	false
-zabbix-frontend-php	zabbix-frontend-php/purge	boolean	false
-zabbix-frontend-php	zabbix-frontend-php/missing-db-package-error	select	abort
-zabbix-frontend-php	zabbix-frontend-php/internal/skip-preseed	boolean	false
+zabbix-frontend-php zabbix-frontend-php/dbconfig-install boolean true
+zabbix-frontend-php zabbix-frontend-php/database-type select mysql
+zabbix-frontend-php zabbix-frontend-php/mysql/app-pass password <%= dbpassword %>
+zabbix-frontend-php zabbix-frontend-php/password-confirm password <%= dbrootpassword %>
+zabbix-frontend-php zabbix-frontend-php/mysql/admin-pass password <%= dbrootpassword %>
+zabbix-frontend-php zabbix-frontend-php/app-password-confirm password <%= dbpassword %>

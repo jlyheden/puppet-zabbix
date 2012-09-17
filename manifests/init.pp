@@ -14,10 +14,17 @@ class zabbix inherits zabbix::params {
 
     @file {
         'zabbix/config/dir':
-            tag     => [global,agent,server,proxy],
+            tag     => [global,agent,server,proxy,frontend],
             path    => $zabbix::params::config_dir,
             ensure	=> directory,
             mode	  => 755;
+        'zabbix/frontend/config/file':
+            tag     => frontend,
+            path    => $zabbix::params::frontend_config_file,
+            ensure  => present,
+            owner   => root,
+            group   => root,
+            mode    => 644;
         'zabbix/server/config/alert/dir':
             tag     => [server,proxy],
             path    => $zabbix::params::alertd_dir,
@@ -137,6 +144,9 @@ class zabbix inherits zabbix::params {
         'zabbix/proxy/package':
             ensure  => present,
             name    => $zabbix::params::proxy_package;
+        'zabbix/frontend/package':
+            ensure  => present,
+            name    => $zabbix::params::frontend_package;
         'mysql/packages':
             ensure       => present,
             name         => $zabbix::params::mysql_packages,
