@@ -118,7 +118,7 @@ class zabbix inherits zabbix::params {
             group   => root,
             before  => Package['zabbix/server/package'];
         'zabbix/proxy/preseed':
-            tag     => server,
+            tag     => proxy,
             path    => $zabbix::params::proxy_preseed_file,
             ensure  => undef,
             mode    => 400,

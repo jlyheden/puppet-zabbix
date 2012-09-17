@@ -115,6 +115,8 @@ class zabbix::params {
 
     # Zabbix proxy defaults
     $proxy_port = 10051
+    $proxy_dbuser = 'zabbix_proxy'
+    $proxy_dbname = 'zabbix_proxy'
     $proxy_startpollers = 5
     $proxy_startipmipollers = 0
     $proxy_startpollersunreachable = 1

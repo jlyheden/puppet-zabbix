@@ -11,7 +11,7 @@ class zabbix::server::absent inherits zabbix {
       ensure => absent,
       responsefile => undef,
     }
-    File<| tag == agent and tag != global |> { ensure => absent, notify => undef }
+    File<| tag == server and tag != global |> { ensure => absent, notify => undef }
 
     realize(Package['zabbix/server/package'])
 }

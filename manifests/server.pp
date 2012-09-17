@@ -104,8 +104,8 @@
 #
 class zabbix::server ( $port = $zabbix::params::server_port,
                        $dbhost,
-                       $dbname,
-                       $dbuser,
+                       $dbname = $zabbix::params::server_dbname,
+                       $dbuser = $zabbix::params::server_dbuser,
                        $dbpassword,
                        $dbrootpassword = undef,
                        $managedb = $zabbix::params::server_managedb,

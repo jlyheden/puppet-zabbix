@@ -20,10 +20,10 @@
 #   Required. IP address or hostname of database server.
 #
 # [*dbname*]
-#   Optional. Name of database. Default: zabbix
+#   Optional. Name of database. Default: zabbix_proxy
 #
 # [*dbuser*]
-#   Optional. Name of database user. Default: zabbix
+#   Optional. Name of database user. Default: zabbix_proxy
 #
 # [*dbpassword*]
 #   Required. Password for database user.
@@ -35,7 +35,7 @@
 #   Optional. If zabbix-proxy installation should pull mysql-server from pkg repository and install it. Note this might conflict with other MySQL modules. Default: false
 #
 # [*heartbeatfrequency*]
-#   Optional. Frequency in seconds to send heartbeat messages. Default: XXXXXXXX
+#   Optional. Frequency in seconds to send heartbeat messages. Default: 60
 #
 # [*startpollers*]
 #   Optional. Number of pre-forked instances of poller. Default: 5
@@ -65,10 +65,10 @@
 #   Optional. Interval in seconds, at which Zabbix will retry to send unsent alerts. Default: 30
 #
 # [*proxylocalbuffer*]
-#   Optional. Number of hours, in which proxy will buffer data. Default: XXXXX
+#   Optional. Number of hours, in which proxy will buffer data. Default: 0
 #
 # [*proxyofflinebuffer*]
-#   Optional. Number of hours, in which proxy will buffer data in case of unavailable server. Default: XXXXX
+#   Optional. Number of hours, in which proxy will buffer data in case of unavailable server. Default: 1
 #
 # [*housekeeping*]
 #   Optional. Boolean if housekeeping should be enabled. Default: true
@@ -120,8 +120,8 @@ class zabbix::proxy ( $nodename = $zabbix::params::nodename,
                       $server_host,
                       $server_port = $zabbix::params::server_port,
                       $dbhost,
-                      $dbname,
-                      $dbuser,
+                      $dbname = $zabbix::params::proxy_dbname,
+                      $dbuser = $zabbix::params::proxy_dbuser,
                       $dbpassword,
                       $dbrootpassword = undef,
                       $managedb = $zabbix::params::proxy_manage_db,
