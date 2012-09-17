@@ -8,7 +8,7 @@
 #
 # === Sample Usage
 #
-#   Don't access this class directly, instead use classes zabbix::agent, zabbix::proxy, zabbix::frontend or zabbix::server
+# Don't access this class directly, instead use classes zabbix::agent, zabbix::proxy, zabbix::frontend or zabbix::server
 #
 class zabbix inherits zabbix::params {
 
@@ -19,12 +19,12 @@ class zabbix inherits zabbix::params {
             ensure	=> directory,
             mode	  => 755;
         'zabbix/server/config/alert/dir':
-            tag     => server,
+            tag     => [server,proxy],
             path    => $zabbix::params::alertd_dir,
             ensure  => directory,
             mode    => 755;
         'zabbix/server/config/externalscripts/dir':
-            tag     => server,
+            tag     => [server,proxy],
             path    => $zabbix::params::externalscripts_dir,
             ensure  => directory,
             mode    => 755;
@@ -37,6 +37,27 @@ class zabbix inherits zabbix::params {
             group   => $zabbix::params::group,
             require => Package['zabbix/server/package'],
             notify  => Service['zabbix/server/service'];
+        'zabbix/proxy/config/file':
+            tag     => proxy,
+            path    => $zabbix::params::proxy_config_file,
+            ensure  => present,
+            mode    => 640,
+            owner   => root,
+            group   => $zabbix::params::group,
+            require => Package['zabbix/proxy/package'],
+            notify  => Service['zabbix/proxy/service'];
+        'zabbix/proxy/pid/dir':
+            tag     => proxy,
+            path    => $zabbix::params::proxy_pid_dir,
+            ensure  => directory,
+            owner   => $zabbix::params::user,
+            group   => $zabbix::params::group;
+        'zabbix/proxy/log/dir':
+            tag     => proxy,
+            path    => $zabbix::params::proxy_log_dir,
+            ensure  => directory,
+            owner   => $zabbix::params::user,
+            group   => $zabbix::params::group;
         'zabbix/agent/config/file':
             tag     => agent,
             path    => $zabbix::params::agent_config_file,
@@ -95,7 +116,15 @@ class zabbix inherits zabbix::params {
             mode    => 400,
             owner   => root,
             group   => root,
-            before  => Package['zabbix/server/package'],
+            before  => Package['zabbix/server/package'];
+        'zabbix/proxy/preseed':
+            tag     => server,
+            path    => $zabbix::params::proxy_preseed_file,
+            ensure  => undef,
+            mode    => 400,
+            owner   => root,
+            group   => root,
+            before  => Package['zabbix/proxy/package'],
     }
 
     @package {
