@@ -1,10 +1,8 @@
 # MANAGED BY PUPPET
-zabbix-server-mysql     zabbix-server-mysql/dbconfig-install    boolean true
-zabbix-server-mysql     zabbix-server-mysql/db/app-user string  <%= dbuser %>
-zabbix-server-mysql     zabbix-server-mysql/db/dbname   string  <%= dbname %>
-zabbix-server-mysql     zabbix-server-mysql/database-type   select  mysql
-zabbix-server-mysql     zabbix-server-mysql/mysql/app-pass  password    <%= dbpassword %>
-zabbix-server-mysql     zabbix-server-mysql/app-password-confirm    password    <%= dbpassword %>
-zabbix-server-mysql     zabbix-server-mysql/mysql/admin-pass    password    <%= dbrootpassword %>
-zabbix-server-mysql     zabbix-server-mysql/password-confirm    password    <%= dbrootpassword %>
-zabbix-server-mysql     zabbix-server-mysql/mysql/admin-user    string  root
+zabbix-server-mysql zabbix-server-mysql/dbconfig-install boolean true
+zabbix-server-mysql zabbix-server-mysql/database-type select mysql
+zabbix-server-mysql zabbix-server-mysql/mysql/app-pass password <%= dbpassword %>
+zabbix-server-mysql zabbix-server-mysql/app-password-confirm password <%= dbpassword %>
+zabbix-server-mysql zabbix-server-mysql/mysql/admin-pass password <%= dbrootpassword %>
+zabbix-server-mysql zabbix-server-mysql/password-confirm password <%= dbrootpassword %>
+

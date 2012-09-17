@@ -26,7 +26,7 @@ TrapperTimeout=<%= scope.lookupvar("zabbix::proxy::trappertimeout") %>
 UnreachablePeriod=<%= scope.lookupvar("zabbix::proxy::unreachableperiod") %>
 UnavailableDelay=<%= scope.lookupvar("zabbix::proxy::unavailabledelay") %>
 
-PidFile=<%= scope.lookupvar("zabbix::params::proxy_pid_dir") %>/zabbix_proxy.pid
+PidFile=<%= scope.lookupvar("zabbix::params::pid_dir") %>/zabbix_proxy.pid
 LogFile=<%= scope.lookupvar("zabbix::params::proxy_log_dir") %>/zabbix_proxy.log
 
 LogFileSize=<%= scope.lookupvar("zabbix::proxy::logfilesize") %>

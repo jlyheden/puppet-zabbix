@@ -1,10 +1,8 @@
 # MANAGED BY PUPPET
-zabbix-proxy-mysql  zabbix-proxy-mysql/dbconfig-install boolean true
-zabbix-proxy-mysql  zabbix-proxy-mysql/db/app-user  string  <%= dbuser %>
-zabbix-proxy-mysql  zabbix-proxy-mysql/db/dbname    string  <%= dbname %>
-zabbix-proxy-mysql	zabbix-proxy-mysql/mysql/app-pass    password    <%= dbpassword %>
-zabbix-proxy-mysql	zabbix-proxy-mysql/mysql/admin-pass  password    <%= dbrootpassword %>
-zabbix-proxy-mysql	zabbix-proxy-mysql/app-password-confirm  password    <%= dbpassword %>
-zabbix-proxy-mysql	zabbix-proxy-mysql/password-confirm  password    <%= dbrootpassword %>
-zabbix-proxy-mysql	zabbix-proxy-mysql/database-type select  mysql
-zabbix-proxy-mysql	zabbix-proxy-mysql/mysql/admin-user  string  root
+zabbix-proxy-mysql zabbix-proxy-mysql/dbconfig-install boolean true
+zabbix-proxy-mysql zabbix-proxy-mysql/database-type select mysql
+zabbix-proxy-mysql zabbix-proxy-mysql/mysql/app-pass password <%= dbpassword %>
+zabbix-proxy-mysql zabbix-proxy-mysql/mysql/admin-pass password <%= dbrootpassword %>
+zabbix-proxy-mysql zabbix-proxy-mysql/app-password-confirm password <%= dbpassword %>
+zabbix-proxy-mysql zabbix-proxy-mysql/password-confirm password <%= dbrootpassword %>
+

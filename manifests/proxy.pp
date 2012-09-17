@@ -177,10 +177,9 @@ class zabbix::proxy ( $nodename = $zabbix::params::nodename,
       if $dbrootpassword == undef {
         fail('You must set dbrootpassword when managedb is set to true')
       }
-      File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb'), before  => Package['mysql/packages'] }
+      File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb') }
       File['zabbix/proxy/preseed'] { ensure => present, content => template('zabbix/proxy/preseed.erb') }
-      Package['mysql/packages'] { before +> Package['zabbix/proxy/package'] }
-      Package['zabbix/proxy/package'] { responsefile => $zabbix::params::proxy_preseed_file }
+      Package['zabbix/proxy/package'] { responsefile => $zabbix::params::proxy_preseed_file, require => Package['mysql/packages'] } 
       realize(Package['mysql/packages'])
     }
 

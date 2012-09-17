@@ -18,6 +18,12 @@ class zabbix inherits zabbix::params {
             path    => $zabbix::params::config_dir,
             ensure	=> directory,
             mode	  => 755;
+        'zabbix/pid/dir':
+            tag     => [global,agent,server,proxy],
+            path    => $zabbix::params::pid_dir,
+            mode    => 755,
+            owner   => $zabbix::params::user,
+            group   => $zabbix::params::group;
         'zabbix/frontend/config/file':
             tag     => frontend,
             path    => $zabbix::params::frontend_config_file,
@@ -53,12 +59,6 @@ class zabbix inherits zabbix::params {
             group   => $zabbix::params::group,
             require => Package['zabbix/proxy/package'],
             notify  => Service['zabbix/proxy/service'];
-        'zabbix/proxy/pid/dir':
-            tag     => proxy,
-            path    => $zabbix::params::proxy_pid_dir,
-            ensure  => directory,
-            owner   => $zabbix::params::user,
-            group   => $zabbix::params::group;
         'zabbix/proxy/log/dir':
             tag     => proxy,
             path    => $zabbix::params::proxy_log_dir,
@@ -81,23 +81,9 @@ class zabbix inherits zabbix::params {
             recurse => true,
             notify  => Service['zabbix/agent/service'],
             mode    => 755;
-        'zabbix/agent/pid/dir':
-            tag     => agent,
-            path    => $zabbix::params::agent_pid_dir,
-            ensure  => directory,
-            mode    => 755,
-            owner   => $zabbix::params::user,
-            group   => $zabbix::params::group;
         'zabbix/agent/log/dir':
             tag     => agent,
             path    => $zabbix::params::agent_log_dir,
-            ensure  => directory,
-            mode    => 755,
-            owner   => $zabbix::params::user,
-            group   => $zabbix::params::group;
-        'zabbix/server/pid/dir':
-            tag     => server,
-            path    => $zabbix::params::server_pid_dir,
             ensure  => directory,
             mode    => 755,
             owner   => $zabbix::params::user,
@@ -124,6 +110,14 @@ class zabbix inherits zabbix::params {
             owner   => root,
             group   => root,
             before  => Package['zabbix/server/package'];
+        'zabbix/frontend/preseed':
+            tag     => frontend,
+            path    => $zabbix::params::frontend_preseed_file,
+            ensure  => undef,
+            mode    => 400,
+            owner   => root,
+            group   => root,
+            before  => Package['zabbix/frontend/package'];
         'zabbix/proxy/preseed':
             tag     => proxy,
             path    => $zabbix::params::proxy_preseed_file,
@@ -151,9 +145,13 @@ class zabbix inherits zabbix::params {
             ensure       => present,
             name         => $zabbix::params::mysql_packages,
             responsefile => $::operatingsystem ? {
-              ubuntu  => $zabbix::params::mysql_preseed_file,
-              default => undef,
+              ubuntu     => $zabbix::params::mysql_preseed_file,
+              default    => undef,
             },
+            require      => $::operatingsystem ? {
+              ubuntu     => File['mysql/preseed'],
+              default    => undef,
+            }
     }
 
     @service {

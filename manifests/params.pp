@@ -5,28 +5,18 @@ class zabbix::params {
     # OS dependent settings
     case $::operatingsystem {
         ubuntu: {
+            # Note 1: there is a bug in Puppet <2.6.7 in which named services does not support hasstatus
+            #         http://projects.puppetlabs.com/issues/5610
+            # Note 2: in order for non-interactive installs to not permanently fail in Lucid it is necessary to install dbconfig-common from lucid-proposed
+            #         https://bugs.launchpad.net/ubuntu/+source/dbconfig-common/+bug/800543
+
             # Global settings
             $user = 'zabbix'
             $group = 'zabbix'
             $config_dir = '/etc/zabbix'
             $alertd_dir = "${config_dir}/alert.d"
             $externalscripts_dir = "${config_dir}/externalscripts"
-
-            # hasstatus doesnt work in puppet 2.6.2 (throws Could not run Puppet configuration client: Could not find init script for 'zabbix-xxx') when running no-install-recommends in ubuntu
-            # https://github.com/duritong/puppet-nagios/issues/2#issuecomment-3095829
-            $agent_hasstatus = $::puppetversion ? {
-                /2\.6\.2/ => undef,
-                default   => true,
-            }
-            $server_hasstatus = $::puppetversion ? {
-                /2\.6\.2/ => undef,
-                default   => true,
-            }
-            $proxy_hasstatus = $::puppetversion ? {
-                /2\.6\.2/ => undef,
-                default   => true,
-            }
-
+            $pid_dir = '/var/run/zabbix'
             $mysql_packages = [ 'mysql-client-5.1', 'mysql-common', 'mysql-server-5.1', 'mysql-server', 'dbconfig-common' ]
             $mysql_preseed_file = '/var/local/mysql.preseed'
 
@@ -35,30 +25,37 @@ class zabbix::params {
             $agent_service = 'zabbix-agent'
             $agent_config_file = "${config_dir}/zabbix_agentd.conf"
             $agent_config_include = "${config_dir}/include.d"
-            $agent_pid_dir = '/var/run/zabbix-agent'
             $agent_log_dir = '/var/log/zabbix-agent'
+            $agent_hasstatus = $::puppetversion ? {
+                /2\.6\.[0-6]/ => undef,
+                default   => true,
+            }
 
             # Server settings
-            # Note: in order for non-interactive installs to not permanently fail in Lucid it is necessary to install dbconfig-common from lucid-proposed
-            # https://bugs.launchpad.net/ubuntu/+source/dbconfig-common/+bug/800543
             $server_package = 'zabbix-server-mysql'
             $server_php_package = 'zabbix-frontend-php'
             $server_config_file = "${config_dir}/zabbix_server.conf"
             $server_php_config_file = "${config_dir}/dbconfig.php"
-            $server_pid_dir = '/var/run/zabbix-server'
             $server_log_dir = '/var/log/zabbix-server'
             $server_service = 'zabbix-server'
             $server_managedb = false
             $server_preseed_file = '/var/local/zabbix-server.preseed'
+            $server_hasstatus = $::puppetversion ? {
+                /2\.6\.[0-6]/ => undef,
+                default   => true,
+            }
 
             # Proxy settings
             $proxy_package = 'zabbix-proxy-mysql'
             $proxy_config_file = "${config_dir}/zabbix_proxy.conf"
             $proxy_service = 'zabbix-proxy'
-            $proxy_pid_dir = '/var/run/zabbix-proxy'
             $proxy_log_dir = '/var/log/zabbix-proxy'
             $proxy_manage_db = false
             $proxy_preseed_file = '/var/local/zabbix-proxy.preseed'
+            $proxy_hasstatus = $::puppetversion ? {
+                /2\.6\.[0-6]/ => undef,
+                default   => true,
+            }
 
             # Frontend settings
             $frontend_config_file = "${config_dir}/dbconfig.php"
@@ -112,7 +109,6 @@ class zabbix::params {
     $server_unavailabledelay = 60
     $server_logfilesize = 10
     $server_tmpdir = '/tmp'
-    $server_pingerfrequency = 60
     $server_cachesize = '8M'
     $server_autoupgrade = false
 

@@ -58,16 +58,16 @@
 # }
 #
 class zabbix::frontend ( $server_host,
- 	                     $server_port = $zabbix::params::server_port,
-	                     $dbhost,
-	                     $dbport = $zabbix::params::frontend_dbport,
-	                     $dbname = $zabbix::params::server_dbname,
-	                     $dbuser = $zabbix::params::server_dbuser,
-	                     $dbpassword,
-	                     $dbrootpassword = undef,
-	                     $managedb = $zabbix::params::frontend_managedb,
-	                     $autoupgrade = $zabbix::params::frontend_autoupgrade,
-	                     $softmanage_apache = false) inherits zabbix::params {
+ 	                       $server_port = $zabbix::params::server_port,
+	                       $dbhost,
+	                       $dbport = $zabbix::params::frontend_dbport,
+	                       $dbname = $zabbix::params::server_dbname,
+	                       $dbuser = $zabbix::params::server_dbuser,
+	                       $dbpassword,
+	                       $dbrootpassword = undef,
+	                       $managedb = $zabbix::params::frontend_managedb,
+	                       $autoupgrade = $zabbix::params::frontend_autoupgrade,
+	                       $softmanage_apache = false) inherits zabbix {
 
     include zabbix::params
 
@@ -93,7 +93,7 @@ class zabbix::frontend ( $server_host,
     }
 
     File['zabbix/frontend/config/file'] {
-      content => template('zabbix/server/zabbix_server.conf.erb'),
+      content => template('zabbix/frontend/dbconfig.php.erb'),
       notify => $softmanage_apache ? {
           true      => Exec['soft-reload-apache'],
           default   => undef
@@ -104,10 +104,10 @@ class zabbix::frontend ( $server_host,
       if $dbrootpassword == undef {
         fail('You must set dbrootpassword when managedb is set to true')
       }
-      File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb'), before  => Package['mysql/packages'] }
+      File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb') }
       File['zabbix/frontend/preseed'] { ensure => present, content => template('zabbix/frontend/preseed.erb') }
       Package['mysql/packages'] { before +> Package['zabbix/frontend/package'] }
-      Package['zabbix/frontend/package'] { responsefile => $zabbix::params::frontend_preseed_file }
+      Package['zabbix/frontend/package'] { responsefile => $zabbix::params::frontend_preseed_file, require +> Package['mysql/packages'] } 
       realize(Package['mysql/packages'])
     }
 

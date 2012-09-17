@@ -79,9 +79,6 @@
 # [*tmpdir*]
 #   Optional. Path to temp directory. Default: /tmp
 #
-# [*pingerfrequency*]
-#   Optional. Frequency in seconds. Default: 60
-#
 # [*cachesize*]
 #   Optional. Size of configuration cache in bytes. Supports metric prefixes. Default: 8M
 #
@@ -127,7 +124,6 @@ class zabbix::server ( $port = $zabbix::params::server_port,
                        $unavailabledelay = $zabbix::params::server_unavailabledelay,
                        $logfilesize = $zabbix::params::server_logfilesize,
                        $tmpdir = $zabbix::params::server_tmpdir,
-                       $pingerfrequency = $zabbix::params::server_pingerfrequency,
                        $cachesize = $zabbix::params::server_cachesize,
                        $autoupgrade = $zabbix::params::server_autoupgrade,
                        $custom_template = undef ) inherits zabbix {
@@ -160,10 +156,9 @@ class zabbix::server ( $port = $zabbix::params::server_port,
       if $dbrootpassword == undef {
         fail('You must set dbrootpassword when managedb is set to true')
       }
-      File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb'), before  => Package['mysql/packages'] }
+      File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb') }
       File['zabbix/server/preseed'] { ensure => present, content => template('zabbix/server/preseed.erb') }
-      Package['mysql/packages'] { before +> Package['zabbix/server/package'] }
-      Package['zabbix/server/package'] { responsefile => $zabbix::params::server_preseed_file }
+      Package['zabbix/server/package'] { responsefile => $zabbix::params::server_preseed_file, require +> Package['mysql/packages'] } 
       realize(Package['mysql/packages'])
     }
 

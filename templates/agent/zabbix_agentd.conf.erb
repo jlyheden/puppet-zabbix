@@ -16,7 +16,7 @@ EnableRemoteCommands=0
 <%- end -%>
 StartAgents=<%= scope.lookupvar("zabbix::agent::startagents") %>
 DebugLevel=<%= scope.lookupvar("zabbix::agent::debuglevel") %>
-PidFile=<%= scope.lookupvar("zabbix::agent::agent_pid_dir") %>/zabbix_agentd.pid
+PidFile=<%= scope.lookupvar("zabbix::agent::pid_dir") %>/zabbix_agentd.pid
 LogFile=<%= scope.lookupvar("zabbix::agent::agent_log_dir") %>/zabbix_agentd.log
 Timeout=<%= scope.lookupvar("zabbix::agent::timeout") %>
 Include=<%= scope.lookupvar("zabbix::agent::agent_config_include") %>/
