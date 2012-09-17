@@ -58,6 +58,7 @@ class zabbix::params {
             $proxy_pid_dir = '/var/run/zabbix-proxy'
             $proxy_log_dir = '/var/log/zabbix-proxy'
             $proxy_manage_db = false
+            $proxy_preseed_file = '/var/local/zabbix-proxy.preseed'
 
             # Frontend settings
             $frontend_config_file = "${config_dir}/dbconfig.php"
