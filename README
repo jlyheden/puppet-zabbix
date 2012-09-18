@@ -1,6 +1,0 @@
-zabbix
-
-This is the zabbix module.
-
-Don't use it in it's current state. For example, preseeding a proxy install does not work correctly, server and frontend installs are not even tested. Probably lots of other bugs.
-Any other client OS than Ubuntu 10.04 will fail.
