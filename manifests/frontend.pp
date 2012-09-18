@@ -106,7 +106,6 @@ class zabbix::frontend ( $server_host,
       }
       File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb') }
       File['zabbix/frontend/preseed'] { ensure => present, content => template('zabbix/frontend/preseed.erb') }
-      Package['mysql/packages'] { before +> Package['zabbix/frontend/package'] }
       Package['zabbix/frontend/package'] { responsefile => $zabbix::params::frontend_preseed_file, require +> Package['mysql/packages'] } 
       realize(Package['mysql/packages'])
     }

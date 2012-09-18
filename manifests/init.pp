@@ -28,9 +28,7 @@ class zabbix inherits zabbix::params {
             tag     => frontend,
             path    => $zabbix::params::frontend_config_file,
             ensure  => present,
-            owner   => root,
-            group   => root,
-            mode    => 644;
+            require => Package['zabbix/frontend/package'];
         'zabbix/server/config/alert/dir':
             tag     => [server,proxy],
             path    => $zabbix::params::alertd_dir,
@@ -159,18 +157,30 @@ class zabbix inherits zabbix::params {
             ensure  => running,
             enable  => true,
             hasstatus => $zabbix::params::agent_hasstatus,
+            restart => "/etc/init.d/${zabbix::params::agent_service} restart",
+            stop    => "/etc/init.d/${zabbix::params::agent_service} stop",
+            start   => "/etc/init.d/${zabbix::params::agent_service} start",
+            pattern => $zabbix::params::agent_pattern,
             name    => $zabbix::params::agent_service,
             require => Package['zabbix/agent/package'];
         'zabbix/server/service':
             ensure  => running,
             enable  => true,
             hasstatus => $zabbix::params::server_hasstatus,
+            restart => "/etc/init.d/${zabbix::params::server_service} restart",
+            stop    => "/etc/init.d/${zabbix::params::server_service} stop",
+            start   => "/etc/init.d/${zabbix::params::server_service} start",
+            pattern => $zabbix::params::server_pattern,
             name    => $zabbix::params::server_service,
             require => Package['zabbix/server/package'];
         'zabbix/proxy/service':
             ensure  => running,
             enable  => true,
             name    => $zabbix::params::proxy_service,
+            restart => "/etc/init.d/${zabbix::params::proxy_service} restart",
+            stop    => "/etc/init.d/${zabbix::params::proxy_service} stop",
+            start   => "/etc/init.d/${zabbix::params::proxy_service} start",
+            pattern => $zabbix::params::proxy_pattern,
             require => Package['zabbix/proxy/package'];
     }
 

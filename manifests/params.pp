@@ -19,16 +19,20 @@ class zabbix::params {
             $pid_dir = '/var/run/zabbix'
             $mysql_packages = [ 'mysql-client-5.1', 'mysql-common', 'mysql-server-5.1', 'mysql-server', 'dbconfig-common' ]
             $mysql_preseed_file = '/var/local/mysql.preseed'
-
+            $bug_5610 = $::puppetversion ? {
+                /2\.6\.[0-6]/ => true,
+                default => false,
+            }
             # Agent settings
             $agent_package = 'zabbix-agent'
             $agent_service = 'zabbix-agent'
+            $agent_pattern = 'zabbix_agentd'
             $agent_config_file = "${config_dir}/zabbix_agentd.conf"
             $agent_config_include = "${config_dir}/include.d"
             $agent_log_dir = '/var/log/zabbix-agent'
-            $agent_hasstatus = $::puppetversion ? {
-                /2\.6\.[0-6]/ => undef,
-                default   => true,
+            $agent_hasstatus = $bug_5610 ? {
+                true    => false,
+                default => true
             }
 
             # Server settings
@@ -38,23 +42,25 @@ class zabbix::params {
             $server_php_config_file = "${config_dir}/dbconfig.php"
             $server_log_dir = '/var/log/zabbix-server'
             $server_service = 'zabbix-server'
+            $server_pattern = 'zabbix_server'
             $server_managedb = false
             $server_preseed_file = '/var/local/zabbix-server.preseed'
-            $server_hasstatus = $::puppetversion ? {
-                /2\.6\.[0-6]/ => undef,
-                default   => true,
+            $server_hasstatus = $bug_5610 ? {
+                true    => false,
+                default => true
             }
 
             # Proxy settings
             $proxy_package = 'zabbix-proxy-mysql'
             $proxy_config_file = "${config_dir}/zabbix_proxy.conf"
             $proxy_service = 'zabbix-proxy'
+            $proxy_pattern = 'zabbix_proxy'
             $proxy_log_dir = '/var/log/zabbix-proxy'
             $proxy_manage_db = false
             $proxy_preseed_file = '/var/local/zabbix-proxy.preseed'
-            $proxy_hasstatus = $::puppetversion ? {
-                /2\.6\.[0-6]/ => undef,
-                default   => true,
+            $proxy_hasstatus = $bug_5610 ? {
+                true    => false,
+                default => true 
             }
 
             # Frontend settings
