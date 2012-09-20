@@ -9,32 +9,85 @@
   "version": "0.0.1",
   "checksums": {
     "Modulefile": "6e323e25d347ee1259468b9f5135e3c4",
-    "README": "9767aaf6a334875e3c4cf81c7e5362c5",
+    "README.md": "e2a4a245805d69255a6fb80a851dd53f",
+    "lib/puppet/provider/zabbixagent/zabbixprovider.rb": "b89b38461411e6ff2d57d46359d12d99",
+    "lib/puppet/provider/zabbixprovider.rb": "aebdfd287f0556a1d7a5d358f22da1a3",
+    "lib/puppet/type/zabbixagent.rb": "d54986ab8f9f3c32e216a2aa514043fa",
     "manifests/agent.pp": "118b6e8345f87ae6d24534f3f077911d",
     "manifests/agent/absent.pp": "3aecd2876d4fb969a6932c2b07c93c5a",
     "manifests/agent/disable.pp": "c4841e909e3f75504150d4a181eeea62",
     "manifests/agent/userparameter.pp": "d7c39836cd451d40929a5b025f74c4e8",
-    "manifests/frontend.pp": "dc14e456f197bc790a30873b578ae218",
-    "manifests/init.pp": "2ee50779f46c7282115bbfad7aa26077",
-    "manifests/params.pp": "da83a585351bc56bae6605bc3e8b20c9",
-    "manifests/proxy.pp": "7ababf5408d645f85394e36f7d4a8b47",
+    "manifests/frontend.pp": "dad89f7d143be9df2a4747047990351d",
+    "manifests/init.pp": "f9517a016bf50534b5f5805157c8afff",
+    "manifests/params.pp": "d19d547a54be4bab32b9138dd9e3d6a8",
+    "manifests/proxy.pp": "c34a15a8fcd39d22aa586ea24617971f",
     "manifests/proxy/absent.pp": "20e3c87225b17f4d21162b277bc12878",
     "manifests/proxy/disable.pp": "db3488d871daf6e96ee993d969f68b70",
-    "manifests/server.pp": "178e32f08031003e0555d1b946891143",
+    "manifests/server.pp": "60586877d7c49e34d9024d1761ab4945",
     "manifests/server/absent.pp": "a785aa5af82517025b6eec9315eea60e",
     "manifests/server/disable.pp": "3d4b3515d51b600f6528e41f18870fa1",
     "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
     "spec/spec_helper.rb": "ca19ec4f451ebc7fdb035b52eae6e909",
     "templates/agent/userparameter.erb": "698a8bc248e5d24450809de4e657765a",
-    "templates/agent/zabbix_agentd.conf.erb": "b8347d7be86a3b0976a87b09734c6f7a",
+    "templates/agent/zabbix_agentd.conf.erb": "12123a250be6e27494312a93ff54d113",
     "templates/frontend/dbconfig.php.erb": "681421426c8f8c98961cd695c6efaf7e",
     "templates/frontend/preseed.erb": "8becc1f3671325293b9922d85618f20f",
     "templates/mysql/preseed.erb": "9ddc7fccdf9918df1932fcc5656c50a8",
-    "templates/proxy/preseed.erb": "be199055bea0bc216998830b2876f26c",
-    "templates/proxy/zabbix_proxy.conf.erb": "1391508b6b97a26e00ef3ffa8d6e4429",
-    "templates/server/preseed.erb": "0292808a29d4b7f649625a18d2f637bf",
-    "templates/server/zabbix_server.conf.erb": "8288c9f549a9bc51ed6344886ece216f",
+    "templates/proxy/preseed.erb": "ea0a0d30633d8ca99e92627ff9d50f9f",
+    "templates/proxy/zabbix_proxy.conf.erb": "628f8eb73d3c2295644c3d17a6d012ba",
+    "templates/server/preseed.erb": "c9474e230da302cbfcdc296d34b663d4",
+    "templates/server/zabbix_server.conf.erb": "ac64ba89c3ad8e6d2d4180c556e70b0f",
     "tests/init.pp": "995add4b9f5a222dcb03d67acf8590c4"
   },
+  "types": [
+    {
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The name of the Zabbix agent as referenced in the Zabbix Server"
+        },
+        {
+          "name": "apiurl",
+          "doc": "URL to the Zabbix API"
+        },
+        {
+          "name": "apiuser",
+          "doc": "User connecting to the Zabbix API"
+        },
+        {
+          "name": "apipassword",
+          "doc": "User password connecting to the Zabbix API"
+        },
+        {
+          "name": "ip",
+          "doc": "IP address of agent"
+        },
+        {
+          "name": "dns",
+          "doc": "DNS name of agent"
+        },
+        {
+          "name": "ipmi",
+          "doc": "If IPMI should be used"
+        },
+        {
+          "name": "snmp",
+          "doc": "If SNMP should be used"
+        },
+        {
+          "name": "port",
+          "doc": "Passive agent port"
+        }
+      ],
+      "providers": [
+        {
+          "name": "zabbixprovider",
+          "doc": "Manages a Zabbix agent"
+        }
+      ],
+      "name": "zabbixagent",
+      "doc": "Manage a Zabbix agent"
+    }
+  ],
   "dependencies": []
 }
