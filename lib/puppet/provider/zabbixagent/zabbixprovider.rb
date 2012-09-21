@@ -1,15 +1,13 @@
-require 'puppet/provider/zabbixprovider'
+require 'zbxapi'
+require File.join(File.dirname(__FILE__), '..', 'zabbixprovider')
 
-Puppet::Type.type(:zabbixagent).provide(:zabbixprovider, :parent => Puppet::Provider::Zabbixprovider) do
-  desc 'Manages a Zabbix agent'
-  
+Puppet::Type.type(:zabbixagent).provide :zabbixprovider, :parent => Puppet::Provider::Zabbixprovider do
+  desc "Manages a Zabbix agent"
+
   def exists?
     token = zbxapi_login(@resource)
-    if token.host.exists( { 'host' => @resource[:name] } )
-      return true
-    else
-      return false
-    end
+    return true if token.host.get( { 'output' => 'shorten', 'filter' => { 'host' => @resource[:name] } } ).length > 0
+    return false
   end
 
   def create
@@ -17,12 +15,13 @@ Puppet::Type.type(:zabbixagent).provide(:zabbixprovider, :parent => Puppet::Prov
     create_hash = {}
     create_hash['host'] = @resource[:name]
     create_hash['ip'] = @resource[:ip]
-    create_hash['dns'] = @resource[:dns] if @resouce.has_key? :dns
+    create_hash['dns'] = @resource[:dns] unless @resource == false
     create_hash['useip'] = 1
     create_hash['port'] = @resource[:port]
     create_hash['ipmi_privilege'] = 2 # not sure why this is needed
     create_hash['useipmi'] = zabbix_boolean(@resource[:ipmi])
     create_hash['snmp'] = zabbix_boolean(@resource[:snmp])
+    create_hash['groups'] = [ { 'groupid' => 2 } ]
     token.host.create(create_hash)
   end
 

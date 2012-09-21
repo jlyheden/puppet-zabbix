@@ -11,7 +11,7 @@ Puppet::Type.newtype(:zabbixagent) do
   newparam(:apiurl) do
     desc 'URL to the Zabbix API'
     validate do |value|
-      unless value.lower =~ /^(http|https):\/\/.*/
+      unless value.downcase =~ /^(http|https):\/\/.*/
         raise ArgumentError, "%s doesn't look like a valid http url for parameter apiurl" % value
       end
     end
@@ -33,6 +33,7 @@ Puppet::Type.newtype(:zabbixagent) do
 
   newparam(:dns) do
     desc 'DNS name of agent'
+    defaultto false
   end
 
   newparam(:ipmi) do
