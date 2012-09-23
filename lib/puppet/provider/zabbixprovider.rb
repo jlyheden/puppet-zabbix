@@ -1,3 +1,5 @@
+require 'zbxapi'
+
 class Puppet::Provider::Zabbixprovider < Puppet::Provider
   def zabbix_boolean(b)
     return 1 if b == true

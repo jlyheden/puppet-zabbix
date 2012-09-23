@@ -1,4 +1,3 @@
-require 'zbxapi'
 require File.join(File.dirname(__FILE__), '..', 'zabbixprovider')
 
 Puppet::Type.type(:zabbixagent).provide :zabbixprovider, :parent => Puppet::Provider::Zabbixprovider do

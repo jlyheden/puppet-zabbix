@@ -1,4 +1,3 @@
-require 'zbxapi'
 require File.join(File.dirname(__FILE__), '..', 'zabbixprovider')
 
 Puppet::Type.type(:zabbixagentgroup).provide :zabbixprovider, :parent => Puppet::Provider::Zabbixprovider do
@@ -13,21 +12,23 @@ Puppet::Type.type(:zabbixagentgroup).provide :zabbixprovider, :parent => Puppet:
   end
 
   def get_host_groups_from_name(n,token)
-    host = token.host.get( 'select_groups' => 'extend', 'filter' => { 'name' => [ n] } } )
-    return host[0]['groups']
+    puts n
+    host = token.host.get( { 'select_groups' => 'extend', 'filter' => { 'name' => [ n ] } } )
+    puts host[0]['hostid']
+    return host[0]
   end
 
   def exists?
     token = zbxapi_login(@resource)
-    return true if get_host_groups_from_name(@resource[:node],token).include? { 'name' => @resource[:group] }
+    return true if get_host_groups_from_name(@resource[:nodename],token)['groups'].any? { |h| h['name'] == @resource[:group] }
     return false
   end
 
   def create
     token = zbxapi_login(@resource)
     host_group_ids = []
-    host = get_host_groups_from_name(@resource[:node],token)[0]
-    host.each { |g| host_group_ids << g['groupid'] }
+    host = get_host_groups_from_name(@resource[:nodename],token)
+    host['groups'].each { |g| host_group_ids << g['groupid'] }
     host_group_ids << get_group_id_from_name(@resource[:group],token)
     token.host.update( { 'hostid' => host['hostid'], 'groups' => host_group_ids } )
   end
@@ -35,8 +36,8 @@ Puppet::Type.type(:zabbixagentgroup).provide :zabbixprovider, :parent => Puppet:
   def destroy
     token = zbxapi_login(@resource)
     host_group_ids = []
-    host = get_host_groups_from_name(@resource[:node],token)[0]
-    host.each { |g| host_group_ids << g['groupid'] }
+    host = get_host_groups_from_name(@resource[:nodename],token)
+    host['groups'].each { |g| host_group_ids << g['groupid'] }
     group_to_remove = get_group_id_from_name(@resource[:group],token)
     token.host.update( { 'hostid' => host['hostid'], 'groups' => host_group_ids.reject { |gid| gid == group_to_remove } } )
   end

@@ -26,7 +26,7 @@ Puppet::Type.newtype(:zabbixagentgroup) do
     desc 'User password connecting to the Zabbix API'
   end
 
-  newparam(:node) do
+  newparam(:nodename) do
     desc 'Name of the Zabbix agent node to manage'
   end
   
