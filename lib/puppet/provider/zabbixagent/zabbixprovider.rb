@@ -5,7 +5,7 @@ Puppet::Type.type(:zabbixagent).provide :zabbixprovider, :parent => Puppet::Prov
 
   def exists?
     token = zbxapi_login(@resource)
-    return true unless zbxapi_get_ids_from_name(@resource[:name],token) == nil
+    return true unless zbxapi_get_host_from_name(@resource[:name], 'shorten', token).length == 0
     return false
   end
 
@@ -30,7 +30,7 @@ Puppet::Type.type(:zabbixagent).provide :zabbixprovider, :parent => Puppet::Prov
     # https://support.zabbix.com/browse/ZBX-3064
     ids_to_delete = []
     token = zbxapi_login(@resource)
-    zbxapi_get_ids_from_name(@resource[:name],token).each { |n| ids_to_delete << n['hostid'] if n.has_key? 'hostid' }
+    zbxapi_get_host_from_name(@resource[:name], 'shorten', token).each { |n| ids_to_delete << n['hostid'] if n.has_key? 'hostid' }
     token.host.delete(ids_to_delete)
   end
 
