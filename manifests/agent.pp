@@ -208,7 +208,7 @@ class zabbix::agent (
         ensure    => $service_status_real,
         name      => $zabbix::params::agent_service,
         enable    => $service_enable_real,
-        require   => [ Package['zabbix::agent'], File['zabbix/agent/config/file','zabbix/agent/config/dir' ] ]
+        require   => [ Package['zabbix::agent'], File['zabbix/agent/conf','zabbix/agent/conf_d' ] ]
       }
     }
     default: {}
