@@ -128,18 +128,4 @@ class zabbix {
             require => Package['zabbix/proxy/package'];
     }
 
-    @user { 'zabbix/user':
-        ensure      => present,
-        name        => $zabbix::params::user,
-        shell       => '/bin/false',
-        managehome  => false,
-        home        => "/home/${zabbix::params::user}",
-        gid         => $zabbix::params::group
-    }
-
-    @group { 'zabbix/group':
-    	ensure     => present,
-    	name       => $zabbix::params::group,
-    }
-
 }

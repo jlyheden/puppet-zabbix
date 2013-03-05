@@ -64,22 +64,6 @@ Include=/etc/zabbix/zabbix_agentd.d/
       'mode'    => '0640'
     ) end
     it do
-      should contain_user('zabbix/user').with(
-        'ensure'      => 'present',
-        'name'        => 'zabbix',
-        'shell'       => '/bin/false',
-        'managehome'  => false,
-        'home'        => '/home/zabbix',
-        'gid'         => 'zabbix',
-        'uid'         => nil
-      )
-      should contain_group('zabbix/group').with(
-        'ensure'      => 'present',
-        'name'        => 'zabbix',
-        'gid'         => nil
-      )
-    end
-    it do
       should_not contain_file('zabbix/agent/run_d')
       should_not contain_file('zabbix/agent/log_d')
     end

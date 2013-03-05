@@ -20,10 +20,7 @@ class zabbix::agent (
   $run_d            = 'UNDEF',
   $log_d            = 'UNDEF',
   $server           = 'UNDEF',
-  $agent_parameters = 'UNDEF',
-  $manage_user      = 'UNDEF',
-  $manage_uid       = 'UNDEF',
-  $manage_gid       = 'UNDEF'
+  $agent_parameters = 'UNDEF'
 ) inherits zabbix {
 
   include zabbix::params
@@ -65,14 +62,6 @@ class zabbix::agent (
     'UNDEF' => $zabbix::params::log_dir,
     default => $log_d
   }
-  $manage_uid_real = $manage_uid ? {
-    'UNDEF' => $zabbix::params::uid,
-    default => $manage_uid
-  }
-  $manage_gid_real = $manage_gid ? {
-    'UNDEF' => $zabbix::params::gid,
-    default => $manage_gid
-  }
   $server_real = $server ? {
     'UNDEF' => $zabbix::params::agent_server,
     default => $server
@@ -80,10 +69,6 @@ class zabbix::agent (
   $agent_parameters_real = $agent_parameters ? {
     'UNDEF' => $zabbix::params::agent_parameters,
     default => $agent_parameters
-  }
-  $manage_user_real = $manage_user ? {
-    'UNDEF' => false,
-    default => $manage_user
   }
 
   $agent_parameters_real['LogFile'] = "${log_d_real}/zabbix_agentd.log"
@@ -104,7 +89,6 @@ class zabbix::agent (
   validate_bool($service_enable_real)
   validate_bool($autoupgrade_real)
   validate_bool($autorestart_real)
-  validate_bool($manage_user_real)
   if $source_real != ''  and $content_real != '' {
     fail('Only one of parameters source and content can be set')
   }
@@ -123,8 +107,10 @@ class zabbix::agent (
   case $ensure_real {
     present: {
       if $run_d_real == $zabbix::params::run_dir {
+        Package['zabbix::agent'] -> File['zabbix/run_d']
         realize(File['zabbix/run_d'])
       } else {
+        Package['zabbix::agent'] -> File['zabbix/agent/run_d']
         file { 'zabbix/agent/run_d':
           ensure  => directory,
           path    => $run_d_real,
@@ -134,8 +120,10 @@ class zabbix::agent (
         }
       }
       if $log_d_real == $zabbix::params::log_dir {
+        Package['zabbix::agent'] -> File['zabbix/log_d']
         realize(File['zabbix/log_d'])
       } else {
+        Package['zabbix::agent'] -> File['zabbix/agent/log_d']
         file { 'zabbix/agent/log_d':
           ensure  => directory,
           path    => $log_d_real,
@@ -161,12 +149,6 @@ class zabbix::agent (
           purge   => true,
           recurse => true
         }
-      }
-      if $manage_user {
-        User['zabbix/user'] { uid => $manage_uid_real }
-        Group['zabbix/group'] { gid => $manage_gid_real }
-        realize (User['zabbix/user'], Group['zabbix/group'])
-        Package['zabbix::agent'] { require => [ User['zabbix/user'], Group['zabbix/group'] ] } # try to add users before package does it
       }
       if $zabbix::params::agent_hasstatus {
         Service['zabbix::agent'] {
@@ -210,6 +192,8 @@ class zabbix::agent (
         enable    => $service_enable_real,
         require   => [ Package['zabbix::agent'], File['zabbix/agent/conf','zabbix/agent/conf_d' ] ]
       }
+      # Let package create user
+      Package['zabbix::agent'] -> File['zabbix/agent/conf','zabbix/agent/conf_d']
     }
     default: {}
   }
