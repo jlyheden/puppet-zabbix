@@ -22,8 +22,8 @@ class zabbix::agent (
   $server           = 'UNDEF',
   $agent_parameters = 'UNDEF',
   $manage_user      = 'UNDEF',
-  $zabbix_uid       = 'UNDEF',
-  $zabbix_gid       = 'UNDEF'
+  $manage_uid       = 'UNDEF',
+  $manage_gid       = 'UNDEF'
 ) inherits zabbix {
 
   include zabbix::params
@@ -65,13 +65,13 @@ class zabbix::agent (
     'UNDEF' => $zabbix::params::log_dir,
     default => $log_d
   }
-  $zabbix_uid_real = $user_uid ? {
-    'UNDEF' => $zabbix::params::all_uid,
-    default => $user_uid
+  $manage_uid_real = $manage_uid ? {
+    'UNDEF' => $zabbix::params::uid,
+    default => $manage_uid
   }
-  $zabbix_gid_real = $user_gid ? {
-    'UNDEF' => $zabbix::params::all_gid,
-    default => $user_gid
+  $manage_gid_real = $manage_gid ? {
+    'UNDEF' => $zabbix::params::gid,
+    default => $manage_gid
   }
   $server_real = $server ? {
     'UNDEF' => $zabbix::params::agent_server,
@@ -163,8 +163,8 @@ class zabbix::agent (
         }
       }
       if $manage_user {
-        User['zabbix/user'] { uid => $zabbix_uid }
-        Group['zabbix/group'] { gid => $zabbix_gid }
+        User['zabbix/user'] { uid => $manage_uid_real }
+        Group['zabbix/group'] { gid => $manage_gid_real }
         realize (User['zabbix/user'], Group['zabbix/group'])
         Package['zabbix::agent'] { require => [ User['zabbix/user'], Group['zabbix/group'] ] } # try to add users before package does it
       }
