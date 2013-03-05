@@ -1,22 +1,11 @@
 # MANAGED BY PUPPET
-
-Server=<%= scope.lookupvar("zabbix::agent::server_host") %>
-ServerPort=<%= scope.lookupvar("zabbix::agent::server_port") %>
-Hostname=<%= scope.lookupvar("zabbix::agent::nodename") %>
-ListenPort=<%= scope.lookupvar("zabbix::agent::port") %>
-<%- if scope.lookupvar("zabbix::agent::active_mode") == true -%>
-DisableActive=0
-<%- else -%>
-DisableActive=1
+<%- conf_d = scope.lookupvar('zabbix::params::agent_conf_d') -%>
+Server=<%= server_real %>
+<%- agent_parameters_real.sort_by { |k,v| k }.each do |k| -%>
+<%= k[0] %>=<%= k[1] %>
 <%- end -%>
-<%- if scope.lookupvar("zabbix::agent::remote_commands") == true -%>
-EnableRemoteCommands=1
+<%- if conf_d.end_with?('/') -%>
+Include=<%= conf_d %>
 <%- else -%>
-EnableRemoteCommands=0
+Include=<%= "%s/" % conf_d %>
 <%- end -%>
-StartAgents=<%= scope.lookupvar("zabbix::agent::startagents") %>
-DebugLevel=<%= scope.lookupvar("zabbix::agent::debuglevel") %>
-PidFile=<%= scope.lookupvar("zabbix::agent::pid_dir") %>/zabbix_agentd.pid
-LogFile=<%= scope.lookupvar("zabbix::agent::agent_log_dir") %>/zabbix_agentd.log
-Timeout=<%= scope.lookupvar("zabbix::agent::timeout") %>
-Include=<%= scope.lookupvar("zabbix::agent::agent_config_include") %>/

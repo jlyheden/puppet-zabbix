@@ -10,89 +10,46 @@
 #
 # Don't access this class directly, instead use classes zabbix::agent, zabbix::proxy, zabbix::frontend or zabbix::server
 #
-class zabbix inherits zabbix::params {
+class zabbix {
 
-    @file {
-        'zabbix/config/dir':
-            tag     => [global,agent,server,proxy,frontend],
-            path    => $zabbix::params::config_dir,
-            ensure	=> directory,
-            mode	  => 755;
-        'zabbix/pid/dir':
-            tag     => [global,agent,server,proxy],
-            path    => $zabbix::params::pid_dir,
-            mode    => 755,
-            owner   => $zabbix::params::user,
-            group   => $zabbix::params::group;
-        'zabbix/frontend/config/file':
-            tag     => frontend,
-            path    => $zabbix::params::frontend_config_file,
-            ensure  => present,
-            require => Package['zabbix/frontend/package'];
-        'zabbix/server/config/alert/dir':
-            tag     => [server,proxy],
-            path    => $zabbix::params::alertd_dir,
-            ensure  => directory,
-            mode    => 755;
-        'zabbix/server/config/externalscripts/dir':
-            tag     => [server,proxy],
-            path    => $zabbix::params::externalscripts_dir,
-            ensure  => directory,
-            mode    => 755;
-        'zabbix/server/config/file':
-            tag     => server,
-            path    => $zabbix::params::server_config_file,
-            ensure  => present,
-            mode    => 640,
-            owner   => root,
-            group   => $zabbix::params::group,
-            require => Package['zabbix/server/package'],
-            notify  => Service['zabbix/server/service'];
-        'zabbix/proxy/config/file':
-            tag     => proxy,
-            path    => $zabbix::params::proxy_config_file,
-            ensure  => present,
-            mode    => 640,
-            owner   => root,
-            group   => $zabbix::params::group,
-            require => Package['zabbix/proxy/package'],
-            notify  => Service['zabbix/proxy/service'];
-        'zabbix/proxy/log/dir':
-            tag     => proxy,
-            path    => $zabbix::params::proxy_log_dir,
-            ensure  => directory,
-            owner   => $zabbix::params::user,
-            group   => $zabbix::params::group;
-        'zabbix/agent/config/file':
-            tag     => agent,
-            path    => $zabbix::params::agent_config_file,
-            ensure  => present,
-            mode    => 644,
-            notify  => Service['zabbix/agent/service'],
-            require => Package['zabbix/agent/package'];
-        'zabbix/agent/config/include/dir':
-            tag     => agent,
-            path    => $zabbix::params::agent_config_include,
-            ensure  => directory,
-            force   => true,
-            purge   => true,
-            recurse => true,
-            notify  => Service['zabbix/agent/service'],
-            mode    => 755;
-        'zabbix/agent/log/dir':
-            tag     => agent,
-            path    => $zabbix::params::agent_log_dir,
-            ensure  => directory,
-            mode    => 755,
-            owner   => $zabbix::params::user,
-            group   => $zabbix::params::group;
-        'zabbix/server/log/dir':
-            tag     => server,
-            path    => $zabbix::params::server_log_dir,
-            ensure  => directory,
-            mode    => 755,
-            owner   => $zabbix::params::user,
-            group   => $zabbix::params::group;
+  include zabbix::params
+
+  @file {
+    'zabbix/conf_d':
+      ensure	=> directory,
+      tag     => [global,agent,server,proxy,frontend],
+      path    => $zabbix::params::config_dir,
+      owner   => 'root',
+      group   => 'root',
+      mode	  => '0644';
+    'zabbix/run_d':
+      ensure  => directory,
+      tag     => [global,agent,server,proxy],
+      path    => $zabbix::params::run_dir,
+      mode    => '0644',
+      owner   => $zabbix::params::user,
+      group   => $zabbix::params::group;
+    'zabbix/log_d':
+      ensure  => directory,
+      tag     => [global,agent,server,proxy],
+      path    => $zabbix::params::log_dir,
+      mode    => '0640',
+      owner   => $zabbix::params::user,
+      group   => $zabbix::params::group;
+    'zabbix/server/alert_d':
+      ensure  => directory,
+      tag     => [server,proxy],
+      path    => $zabbix::params::alertd_dir,
+      owner   => 'root',
+      group   => $zabbix::params::group,
+      mode    => '0640';
+    'zabbix/server/externalscripts_d':
+      ensure  => directory,
+      tag     => [server,proxy],
+      path    => $zabbix::params::externalscripts_dir,
+      owner   => 'root',
+      group   => $zabbix::params::group,
+      mode    => '0640';
         'mysql/preseed':
             tag     => [server,frontend,proxy],
             path    => $zabbix::params::mysql_preseed_file,
@@ -127,9 +84,6 @@ class zabbix inherits zabbix::params {
     }
 
     @package {
-        'zabbix/agent/package':
-            ensure  => present,
-            name    => $zabbix::params::agent_package;
         'zabbix/server/package':
             ensure  => present,
             name    => $zabbix::params::server_package;
@@ -153,16 +107,6 @@ class zabbix inherits zabbix::params {
     }
 
     @service {
-        'zabbix/agent/service':
-            ensure  => running,
-            enable  => true,
-            hasstatus => $zabbix::params::agent_hasstatus,
-            restart => "/etc/init.d/${zabbix::params::agent_service} restart",
-            stop    => "/etc/init.d/${zabbix::params::agent_service} stop",
-            start   => "/etc/init.d/${zabbix::params::agent_service} start",
-            pattern => $zabbix::params::agent_pattern,
-            name    => $zabbix::params::agent_service,
-            require => Package['zabbix/agent/package'];
         'zabbix/server/service':
             ensure  => running,
             enable  => true,

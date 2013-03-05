@@ -4,102 +4,219 @@
 #
 # === Parameters
 #
-# [*nodename*]
-#   Optional. Hostname of zabbix agent. Default: hostname
-#
-# [*server_host*]
-#   Optional. Comma separated list of Zabbix servers. Default: zabbix.domainname
-#
-# [*server_port*]
-#   Optional. Zabbix server port. Default: 10051
-#
-# [*startagents*]
-#   Optional. Number of pre-forked instances to start. Default: 5
-#
-# [*debuglevel*]
-#   Optional. Numerical level level. Default: 3
-#
-# [*timeout*]
-#   Optional. Maximum time in second spent on processing. Default: 3
-#
-# [*port*]
-#   Optional. Passive listening port for agent. Default: 10050
-#
-# [*active_mode*]
-#   Optional. Boolean if active mode should be enabled. Default: true
-#
-# [*remote_commands*]
-#   Optional. Boolean if remote commands should be allowed. Default: true
-#
-# [*autoupgrade*]
-#   Optional. Boolean to automatically install latest version or pin to specific version. Default: false
-#
-# [*custom_template*]
-#   Optional. Custom zabbix_agentd.conf template use. Default: undef
-#
-# [*zabbix_uid*]
-#   Optional. Numerical UID for zabbix user to use. If undef a random UID will be used. Default: undef
-#
-# [*zabbix_gid*]
-#   Optional. Numerical GID for zabbix user to use. If undef a random GID will be used. Default: undef
-#
-# === Requires
-#
 # === Sample Usage
 #
 # include zabbix::agent
 #
-#   or
-#
-# class { 'zabbix-agent':
-#   nodename    => 'my-different-than $::hostname hostname',
-#   server_host => 'my-custom-zabbix-server',
-#   active_mode => false
-# }
-#
-class zabbix::agent ( $nodename = $zabbix::params::nodename,
-                      $server_host = $zabbix::params::server_host,
-                      $server_port = $zabbix::params::server_port,
-                      $startagents = $zabbix::params::agent_startagents,
-                      $debuglevel = $zabbix::params::agent_debuglevel,
-                      $timeout = $zabbix::params::agent_timeout,
-                      $port = $zabbix::params::agent_port,
-                      $active_mode = $zabbix::params::agent_active_mode,
-                      $remote_commands = $zabbix::params::agent_remote_commands,
-                      $autoupgrade = $zabbix::params::agent_autoupgrade,
-                      $custom_template = undef,
-                      $zabbix_uid = undef,
-                      $zabbix_gid = undef ) inherits zabbix {
+class zabbix::agent (
+  $ensure           = 'UNDEF',
+  $service_enable   = 'UNDEF',
+  $service_status   = 'UNDEF',
+  $autoupgrade      = 'UNDEF',
+  $autorestart      = 'UNDEF',
+  $source           = 'UNDEF',
+  $content          = 'UNDEF',
+  $conf_d_purge     = 'UNDEF',
+  $run_d            = 'UNDEF',
+  $log_d            = 'UNDEF',
+  $server           = 'UNDEF',
+  $agent_parameters = 'UNDEF',
+  $manage_user      = 'UNDEF',
+  $zabbix_uid       = 'UNDEF',
+  $zabbix_gid       = 'UNDEF'
+) inherits zabbix {
 
-    include zabbix::params
+  include zabbix::params
 
-    case $autoupgrade {
-    	true: {
-    		Package['zabbix/agent/package'] { ensure => latest }
-    	}
-    	/[0-9]+[0-9\.\-\_\:a-zA-Z]/: {
-    		Package['zabbix/agent/package'] { ensure => $autoupgrade }
-    	}
-    	false: {
-    		# Do nothing
-    	}
-    	default: {
-    		warning('Parameter autoupgrade only supports values: true, false or version-number')
-    	}
-    }
+  # puppet 2.6 compatibility
+  $ensure_real = $ensure ? {
+    'UNDEF' => $zabbix::params::ensure,
+    default => $ensure
+  }
+  $service_enable_real = $service_enable ? {
+    'UNDEF' => $zabbix::params::service_enable,
+    default => $service_enable
+  }
+  $service_status_real = $service_status ? {
+    'UNDEF' => $zabbix::params::service_status,
+    default => $service_status
+  }
+  $autoupgrade_real = $autoupgrade ? {
+    'UNDEF' => $zabbix::params::autoupgrade,
+    default => $autoupgrade
+  }
+  $autorestart_real = $autorestart ? {
+    'UNDEF' => $zabbix::params::autorestart,
+    default => $autorestart
+  }
+  $source_real = $source ? {
+    'UNDEF' => $zabbix::params::agent_source,
+    default => $source
+  }
+  $conf_d_purge_real = $conf_d_purge ? {
+    'UNDEF' => $zabbix::params::agent_conf_d_purge,
+    default => $conf_d_purge
+  }
+  $run_d_real = $run_d ? {
+    'UNDEF' => $zabbix::params::run_dir,
+    default => $run_d
+  }
+  $log_d_real = $log_d ? {
+    'UNDEF' => $zabbix::params::log_dir,
+    default => $log_d
+  }
+  $zabbix_uid_real = $user_uid ? {
+    'UNDEF' => $zabbix::params::all_uid,
+    default => $user_uid
+  }
+  $zabbix_gid_real = $user_gid ? {
+    'UNDEF' => $zabbix::params::all_gid,
+    default => $user_gid
+  }
+  $server_real = $server ? {
+    'UNDEF' => $zabbix::params::agent_server,
+    default => $server
+  }
+  $agent_parameters_real = $agent_parameters ? {
+    'UNDEF' => $zabbix::params::agent_parameters,
+    default => $agent_parameters
+  }
+  $manage_user_real = $manage_user ? {
+    'UNDEF' => false,
+    default => $manage_user
+  }
 
-    File['zabbix/agent/config/file'] {
-      content => $custom_template ? {
-        undef   => template('zabbix/agent/zabbix_agentd.conf.erb'),
-        default => template($custom_template),
+  $agent_parameters_real['LogFile'] = "${log_d_real}/zabbix_agentd.log"
+  $agent_parameters_real['PidFile'] = "${run_d_real}/zabbix_agentd.pid"
+
+  # Evaluate template as late as possible
+  $content_real = $content ? {
+    'UNDEF'   => $zabbix::params::agent_template ? {
+      ''      => '',
+      default => template($zabbix::params::agent_template)
+    },
+    default   => $content
+  }
+
+  # Input validation
+  validate_re($ensure_real,$zabbix::params::valid_ensure_values)
+  validate_re($service_status_real,$zabbix::params::valid_service_statuses)
+  validate_bool($service_enable_real)
+  validate_bool($autoupgrade_real)
+  validate_bool($autorestart_real)
+  validate_bool($manage_user_real)
+  if $source_real != ''  and $content_real != '' {
+    fail('Only one of parameters source and content can be set')
+  }
+
+  if $ensure_real == 'present' and $autoupgrade_real == true {
+    $ensure_package = 'latest'
+  } else {
+    $ensure_package = $ensure_real
+  }
+
+  $ensure_service = $service_status_real ? {
+    'unmanaged' => undef,
+    default     => $service_status_real
+  }
+
+  case $ensure_real {
+    present: {
+      if $run_d_real == $zabbix::params::run_dir {
+        realize(File['zabbix/run_d'])
+      } else {
+        file { 'zabbix/agent/run_d':
+          ensure  => directory,
+          path    => $run_d_real,
+          owner   => $zabbix::params::user,
+          group   => $zabbix::params::group,
+          mode    => '0644'
+        }
+      }
+      if $log_d_real == $zabbix::params::log_dir {
+        realize(File['zabbix/log_d'])
+      } else {
+        file { 'zabbix/agent/log_d':
+          ensure  => directory,
+          path    => $log_d_real,
+          owner   => $zabbix::params::user,
+          group   => $zabbix::params::group,
+          mode    => '0640'
+        }
+      }
+      if $source_real != '' {
+        File['zabbix/agent/conf'] { source => $source_real }
+      }
+      elsif $content_real != '' {
+        File['zabbix/agent/conf'] { content => $content_real }
+      }
+      if $autorestart_real {
+        File['zabbix/agent/conf'] { notify => Service['zabbix::agent'] }
+        File['zabbix/agent/conf_d'] { notify => Service['zabbix::agent'] }
+        File_line['set_init_script_run_dir'] { notify => Service['zabbix::agent'] }
+      }
+      if $conf_d_purge_real {
+        File['zabbix/agent/conf_d'] {
+          force   => true,
+          purge   => true,
+          recurse => true
+        }
+      }
+      if $manage_user {
+        User['zabbix/user'] { uid => $zabbix_uid }
+        Group['zabbix/group'] { gid => $zabbix_gid }
+        realize (User['zabbix/user'], Group['zabbix/group'])
+        Package['zabbix::agent'] { require => [ User['zabbix/user'], Group['zabbix/group'] ] } # try to add users before package does it
+      }
+      if $zabbix::params::agent_hasstatus {
+        Service['zabbix::agent'] {
+          hasstatus => true
+        }
+      } else {
+        Service['zabbix::agent'] {
+          hasstatus => false,
+          restart   => "/etc/init.d/${zabbix::params::agent_service} restart",
+          stop      => "/etc/init.d/${zabbix::params::agent_service} stop",
+          start     => "/etc/init.d/${zabbix::params::agent_service} start",
+          pattern   => $zabbix::params::agent_pattern,
+        }
+      }
+      # Should set the pid file dir in the zabbix agent init script
+      # Why can't this be overrided in a sourced variable file..
+      file_line { 'set_init_script_run_dir':
+        ensure  => present,
+        path    => $zabbix::params::agent_init,
+        line    => "DIR=${run_d_real}",
+        match   => '^DIR=.*$',
+        require => Package['zabbix::agent']
+      }
+      file { 'zabbix/agent/conf':
+        ensure  => present,
+        path    => $zabbix::params::agent_conf,
+        owner   => 'root',
+        group   => $zabbix::params::group,
+        mode    => '0640'
+      }
+      file { 'zabbix/agent/conf_d':
+        ensure  => directory,
+        path    => $zabbix::params::agent_conf_d,
+        owner   => 'root',
+        group   => $zabbix::params::group,
+        mode    => '0640'
+      }
+      service { 'zabbix::agent':
+        ensure    => $service_status_real,
+        name      => $zabbix::params::agent_service,
+        enable    => $service_enable_real,
+        require   => [ Package['zabbix::agent'], File['zabbix/agent/config/file','zabbix/agent/config/dir' ] ]
       }
     }
+    default: {}
+  }
 
-    User['zabbix/user'] { uid => $zabbix_uid }
-    Group['zabbix/group'] { gid => $zabbix_gid }
-
-    File <| tag == agent |>
-
-    Group <| title == 'zabbix/group' |> -> User <| title == 'zabbix/user' |> -> Package <| title == 'zabbix/agent/package' |> -> Service <| title == 'zabbix/agent/service' |>
+  package { 'zabbix::agent':
+    ensure  => $ensure_package,
+    name    => $zabbix::params::agent_package;
+  }
 
 }

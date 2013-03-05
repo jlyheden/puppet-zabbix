@@ -2,146 +2,171 @@
 # Put whatever hooks for extlookup / hiera here
 class zabbix::params {
 
-    # OS dependent settings
-    case $::operatingsystem {
-        ubuntu: {
-            # Note 1: there is a bug in Puppet <2.6.7 in which named services does not support hasstatus
-            #         http://projects.puppetlabs.com/issues/5610
-            # Note 2: in order for non-interactive installs to not permanently fail in Lucid it is necessary to install dbconfig-common from lucid-proposed
-            #         https://bugs.launchpad.net/ubuntu/+source/dbconfig-common/+bug/800543
+  # Standard service settings
+  $ensure = 'present'
+  $service_enable = true
+  $service_status = 'running'
+  $autoupgrade = false
+  $autorestart = true
 
-            # Global settings
-            $user = 'zabbix'
-            $group = 'zabbix'
-            $config_dir = '/etc/zabbix'
-            $alertd_dir = "${config_dir}/alert.d"
-            $externalscripts_dir = "${config_dir}/externalscripts"
-            $pid_dir = '/var/run/zabbix'
-            $mysql_packages = [ 'mysql-client-5.1', 'mysql-common', 'mysql-server-5.1', 'mysql-server', 'dbconfig-common' ]
-            $mysql_preseed_file = '/var/local/mysql.preseed'
-            $bug_5610 = $::puppetversion ? {
-                /2\.6\.[0-6]/ => true,
-                default => false,
-            }
-            # Agent settings
-            $agent_package = 'zabbix-agent'
-            $agent_service = 'zabbix-agent'
-            $agent_pattern = 'zabbix_agentd'
-            $agent_config_file = "${config_dir}/zabbix_agentd.conf"
-            $agent_config_include = "${config_dir}/include.d"
-            $agent_log_dir = '/var/log/zabbix-agent'
-            $agent_hasstatus = $bug_5610 ? {
-                true    => false,
-                default => true
-            }
+  # Valid standard values
+  $valid_ensure_values = [ 'present', 'absent', 'purged' ]
+  $valid_service_statuses = [ 'running', 'stopped', 'unmanaged' ]
 
-            # Server settings
-            $server_package = 'zabbix-server-mysql'
-            $server_php_package = 'zabbix-frontend-php'
-            $server_config_file = "${config_dir}/zabbix_server.conf"
-            $server_php_config_file = "${config_dir}/dbconfig.php"
-            $server_log_dir = '/var/log/zabbix-server'
-            $server_service = 'zabbix-server'
-            $server_pattern = 'zabbix_server'
-            $server_managedb = false
-            $server_preseed_file = '/var/local/zabbix-server.preseed'
-            $server_hasstatus = $bug_5610 ? {
-                true    => false,
-                default => true
-            }
+  # Zabbix All components
+  $user = 'zabbix'
+  $group = 'zabbix'
+  $uid = undef
+  $gid = undef
+  $config_dir = '/etc/zabbix'
+  $run_dir = "/var/run/zabbix"
+  $log_dir = "/var/log/zabbix"
 
-            # Proxy settings
-            $proxy_package = 'zabbix-proxy-mysql'
-            $proxy_config_file = "${config_dir}/zabbix_proxy.conf"
-            $proxy_service = 'zabbix-proxy'
-            $proxy_pattern = 'zabbix_proxy'
-            $proxy_log_dir = '/var/log/zabbix-proxy'
-            $proxy_manage_db = false
-            $proxy_preseed_file = '/var/local/zabbix-proxy.preseed'
-            $proxy_hasstatus = $bug_5610 ? {
-                true    => false,
-                default => true 
-            }
+  # Zabbix Server settings
+  $server_alertd_dir = "${config_dir}/alert.d"
+  $server_externalscripts_dir = "${config_dir}/externalscripts"
 
-            # Frontend settings
-            $frontend_config_file = "${config_dir}/dbconfig.php"
-            $frontend_package = 'zabbix-frontend-php'
-            $frontend_preseed_file = '/var/local/zabbix-frontend.preseed'
-            $frontend_managedb = false
-            $frontend_apacheservice_reload_cmd = 'service apache2 reload'
-        }
-        default: {
-            fail("Operating system $::operatingsystem not supported")
-        }
+  # Zabbix Proxy settings
+  $proxy_alertd_dir = "${config_dir}/alert.d"
+  $proxy_externalscripts_dir = "${config_dir}/externalscripts"
+
+  # Zabbix Agent settings
+  $agent_server = 'localhost'
+  $agent_source = ''
+  $agent_init = "/etc/init.d/zabbix-agent"
+  $agent_conf = "${config_dir}/zabbix_agentd.conf"
+  $agent_conf_d = "${config_dir}/zabbix_agentd.d"
+  $agent_conf_d_purge = true
+  $agent_parameters = {}
+  $agent_template = 'zabbix/agent/zabbix_agentd.conf.erb'
+
+  # OS dependent settings
+  case $::operatingsystem {
+    'Ubuntu', 'Debian': {
+      # Global settings
+      #$user = 'zabbix'
+      #$group = 'zabbix'
+      #$config_dir = '/etc/zabbix'
+      #$alertd_dir = "${config_dir}/alert.d"
+      #$pid_dir = '/var/run/zabbix'
+      #$mysql_packages = [ 'mysql-client-5.1', 'mysql-common', 'mysql-server-5.1', 'mysql-server', 'dbconfig-common' ]
+      #$mysql_preseed_file = '/var/local/mysql.preseed'
+      $bug_5610 = $::puppetversion ? {
+        /2\.6\.[0-6]/ => true,
+        default => false,
+      }
+      # Agent settings
+      $agent_package = 'zabbix-agent'
+      $agent_service = 'zabbix-agent'
+      $agent_pattern = 'zabbix_agentd'
+      $agent_hasstatus = $bug_5610 ? {
+        true    => false,
+        default => true
+      }
+      # Server settings
+      $server_package = 'zabbix-server-mysql'
+      $server_php_package = 'zabbix-frontend-php'
+      $server_config_file = "${config_dir}/zabbix_server.conf"
+      $server_php_config_file = "${config_dir}/dbconfig.php"
+      $server_log_dir = '/var/log/zabbix-server'
+      $server_service = 'zabbix-server'
+      $server_pattern = 'zabbix_server'
+      $server_managedb = false
+      $server_preseed_file = '/var/local/zabbix-server.preseed'
+      $server_hasstatus = $bug_5610 ? {
+        true    => false,
+        default => true
+      }
+      # Proxy settings
+      $proxy_package = 'zabbix-proxy-mysql'
+      $proxy_config_file = "${config_dir}/zabbix_proxy.conf"
+      $proxy_service = 'zabbix-proxy'
+      $proxy_pattern = 'zabbix_proxy'
+      $proxy_log_dir = '/var/log/zabbix-proxy'
+      $proxy_manage_db = false
+      $proxy_preseed_file = '/var/local/zabbix-proxy.preseed'
+      $proxy_hasstatus = $bug_5610 ? {
+        true    => false,
+        default => true 
+      }
+      # Frontend settings
+      $frontend_config_file = "${config_dir}/dbconfig.php"
+      $frontend_package = 'zabbix-frontend-php'
+      $frontend_preseed_file = '/var/local/zabbix-frontend.preseed'
+      $frontend_managedb = false
+      $frontend_apacheservice_reload_cmd = 'service apache2 reload'
     }
+    default: {
+      fail("Unsupported operatingsystem ${::operatingsystem}")
+    }
+  }
 
-    # Defaults
-    $nodename = $::hostname
+  # Defaults
+  $nodename = $::hostname
 
-    # Zabbix frontend defaults
-    $frontend_dbport = 0
-    $frontend_autoupgrade = false
+  # Zabbix frontend defaults
+  $frontend_dbport = 0
+  $frontend_autoupgrade = false
 
-    # Zabbix agent defaults
-    $agent_port = 10050
-    $agent_active_mode = true
-    $agent_remote_commands = true
-    $agent_auto_register = true
-    $agent_startagents = 5
-    $agent_debuglevel = 3
-    $agent_timeout = 3
-    $agent_autoupgrade = false
+  # Zabbix agent defaults
+  $agent_port = 10050
+  $agent_active_mode = true
+  $agent_remote_commands = true
+  $agent_auto_register = true
+  $agent_startagents = 5
+  $agent_debuglevel = 3
+  $agent_timeout = 3
 
-    # Zabbix server defaults
-    $server_nodeid = 0
-    $server_host = "zabbix.${::domain}"
-    $server_port = 10051
-    $server_dbname = 'zabbix'
-    $server_dbuser = 'zabbix'
-    $server_startpollers = 5
-    $server_startipmipollers = 0
-    $server_startpollersunreachable = 1
-    $server_starttrappers = 5
-    $server_startpingers = 1
-    $server_startdiscoverers = 1
-    $server_starthttppollers = 1
-    $server_housekeepingfrequency = 1
-    $server_senderfrequency = 30
-    $server_housekeeping = true
-    $server_debuglevel = 3
-    $server_timeout = 5
-    $server_trappertimeout = 5
-    $server_unreachableperiod = 45
-    $server_unavailabledelay = 60
-    $server_logfilesize = 10
-    $server_tmpdir = '/tmp'
-    $server_cachesize = '8M'
-    $server_autoupgrade = false
+  # Zabbix server defaults
+  $server_nodeid = 0
+  $server_host = "zabbix.${::domain}"
+  $server_port = 10051
+  $server_dbname = 'zabbix'
+  $server_dbuser = 'zabbix'
+  $server_startpollers = 5
+  $server_startipmipollers = 0
+  $server_startpollersunreachable = 1
+  $server_starttrappers = 5
+  $server_startpingers = 1
+  $server_startdiscoverers = 1
+  $server_starthttppollers = 1
+  $server_housekeepingfrequency = 1
+  $server_senderfrequency = 30
+  $server_housekeeping = true
+  $server_debuglevel = 3
+  $server_timeout = 5
+  $server_trappertimeout = 5
+  $server_unreachableperiod = 45
+  $server_unavailabledelay = 60
+  $server_logfilesize = 10
+  $server_tmpdir = '/tmp'
+  $server_cachesize = '8M'
+  $server_autoupgrade = false
 
-    # Zabbix proxy defaults
-    $proxy_port = 10051
-    $proxy_dbuser = 'zabbix_proxy'
-    $proxy_dbname = 'zabbix_proxy'
-    $proxy_startpollers = 5
-    $proxy_startipmipollers = 0
-    $proxy_startpollersunreachable = 1
-    $proxy_starttrappers = 5
-    $proxy_startpingers = 1
-    $proxy_startdiscoverers = 1
-    $proxy_starthttppollers = 1
-    $proxy_heartbeatfrequency = 60
-    $proxy_housekeepingfrequency = 1
-    $proxy_configfrequency = 3600
-    $proxy_senderfrequency = 30
-    $proxy_proxylocalbuffer = 0
-    $proxy_proxyofflinebuffer = 1
-    $proxy_debuglevel = 3
-    $proxy_timeout = 5
-    $proxy_trappertimeout = 5
-    $proxy_unreachableperiod = 45
-    $proxy_unavailabledelay = 60
-    $proxy_logfilesize = 10
-    $proxy_tmpdir = '/tmp'
-    $proxy_pingerfrequency = 60
+  # Zabbix proxy defaults
+  $proxy_port = 10051
+  $proxy_dbuser = 'zabbix_proxy'
+  $proxy_dbname = 'zabbix_proxy'
+  $proxy_startpollers = 5
+  $proxy_startipmipollers = 0
+  $proxy_startpollersunreachable = 1
+  $proxy_starttrappers = 5
+  $proxy_startpingers = 1
+  $proxy_startdiscoverers = 1
+  $proxy_starthttppollers = 1
+  $proxy_heartbeatfrequency = 60
+  $proxy_housekeepingfrequency = 1
+  $proxy_configfrequency = 3600
+  $proxy_senderfrequency = 30
+  $proxy_proxylocalbuffer = 0
+  $proxy_proxyofflinebuffer = 1
+  $proxy_debuglevel = 3
+  $proxy_timeout = 5
+  $proxy_trappertimeout = 5
+  $proxy_unreachableperiod = 45
+  $proxy_unavailabledelay = 60
+  $proxy_logfilesize = 10
+  $proxy_tmpdir = '/tmp'
+  $proxy_pingerfrequency = 60
 
 }
