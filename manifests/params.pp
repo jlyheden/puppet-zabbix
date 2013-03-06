@@ -32,6 +32,8 @@ class zabbix::params {
   $externalscripts_dir = "${config_dir}/externalscripts"
 
   # Zabbix Proxy settings
+  $proxy_dbname = 'zabbix-proxy'
+  $proxy_dbuser = 'zabbix_proxy'
   $proxy_source = ''
   $proxy_server = 'localhost'
   $proxy_parameters = {}
@@ -112,66 +114,5 @@ class zabbix::params {
   # Zabbix frontend defaults
   $frontend_dbport = 0
   $frontend_autoupgrade = false
-
-  # Zabbix agent defaults
-  $agent_port = 10050
-  $agent_active_mode = true
-  $agent_remote_commands = true
-  $agent_auto_register = true
-  $agent_startagents = 5
-  $agent_debuglevel = 3
-  $agent_timeout = 3
-
-  # Zabbix server defaults
-  $server_nodeid = 0
-  $server_host = "zabbix.${::domain}"
-  $server_port = 10051
-  $server_dbname = 'zabbix'
-  $server_dbuser = 'zabbix'
-  $server_startpollers = 5
-  $server_startipmipollers = 0
-  $server_startpollersunreachable = 1
-  $server_starttrappers = 5
-  $server_startpingers = 1
-  $server_startdiscoverers = 1
-  $server_starthttppollers = 1
-  $server_housekeepingfrequency = 1
-  $server_senderfrequency = 30
-  $server_housekeeping = true
-  $server_debuglevel = 3
-  $server_timeout = 5
-  $server_trappertimeout = 5
-  $server_unreachableperiod = 45
-  $server_unavailabledelay = 60
-  $server_logfilesize = 10
-  $server_tmpdir = '/tmp'
-  $server_cachesize = '8M'
-  $server_autoupgrade = false
-
-  # Zabbix proxy defaults
-  $proxy_port = 10051
-  $proxy_dbuser = 'zabbix_proxy'
-  $proxy_dbname = 'zabbix_proxy'
-  $proxy_startpollers = 5
-  $proxy_startipmipollers = 0
-  $proxy_startpollersunreachable = 1
-  $proxy_starttrappers = 5
-  $proxy_startpingers = 1
-  $proxy_startdiscoverers = 1
-  $proxy_starthttppollers = 1
-  $proxy_heartbeatfrequency = 60
-  $proxy_housekeepingfrequency = 1
-  $proxy_configfrequency = 3600
-  $proxy_senderfrequency = 30
-  $proxy_proxylocalbuffer = 0
-  $proxy_proxyofflinebuffer = 1
-  $proxy_debuglevel = 3
-  $proxy_timeout = 5
-  $proxy_trappertimeout = 5
-  $proxy_unreachableperiod = 45
-  $proxy_unavailabledelay = 60
-  $proxy_logfilesize = 10
-  $proxy_tmpdir = '/tmp'
-  $proxy_pingerfrequency = 60
 
 }

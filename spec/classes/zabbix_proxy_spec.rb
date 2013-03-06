@@ -35,8 +35,8 @@ describe 'zabbix::proxy' do
 
 Server=localhost
 DBHost=localhost
-DBName=zabbix
-DBUser=zabbix
+DBName=zabbix-proxy
+DBUser=zabbix_proxy
 LogFile=/var/log/zabbix/zabbix_proxy.log
 PidFile=/var/run/zabbix/zabbix_proxy.pid
 ") end
@@ -69,8 +69,8 @@ PidFile=/var/run/zabbix/zabbix_proxy.pid
 
 Server=localhost
 DBHost=localhost
-DBName=zabbix
-DBUser=zabbix
+DBName=zabbix-proxy
+DBUser=zabbix_proxy
 LogFile=/logdir/zabbix_proxy.log
 PidFile=/rundir/zabbix_proxy.pid
 ") end

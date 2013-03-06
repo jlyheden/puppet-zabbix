@@ -74,11 +74,11 @@ class zabbix::proxy (
     default => $dbhost
   }
   $dbname_real = $dbname ? {
-    'UNDEF' => $zabbix::params::dbname,
+    'UNDEF' => $zabbix::params::proxy_dbname,
     default => $dbname
   }
   $dbuser_real = $dbuser ? {
-    'UNDEF' => $zabbix::params::dbuser,
+    'UNDEF' => $zabbix::params::proxy_dbuser,
     default => $dbuser
   }
   $dbport_real = $dbport ? {
