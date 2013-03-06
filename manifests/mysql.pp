@@ -10,6 +10,8 @@ class zabbix::mysql (
   $source         = 'UNDEF'
 ) inherits zabbix {
 
+  include zabbix::params
+
   $ensure_real = $ensure ? {
     'UNDEF' => $zabbix::params::ensure,
     default => $ensure
