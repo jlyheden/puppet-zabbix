@@ -20,13 +20,15 @@ class zabbix::proxy (
   $run_d            = 'UNDEF',
   $log_d            = 'UNDEF',
   $server           = 'UNDEF',
+  $dbhost           = 'UNDEF',
   $dbname           = 'UNDEF',
   $dbuser           = 'UNDEF',
+  $dbport           = 'UNDEF',
   $dbpassword       = 'UNDEF',
   $dbrootpassword   = 'UNDEF',
   $managedb         = 'UNDEF',
   $proxy_parameters = 'UNDEF' 
-) {
+) inherits zabbix {
 
   include zabbix::params
 
@@ -67,6 +69,10 @@ class zabbix::proxy (
     'UNDEF' => $zabbix::params::proxy_server,
     default => $server
   }
+  $dbhost_real = $dbhost ? {
+    'UNDEF' => $zabbix::params::dbhost,
+    default => $dbhost
+  }
   $dbname_real = $dbname ? {
     'UNDEF' => $zabbix::params::dbname,
     default => $dbname
@@ -75,13 +81,17 @@ class zabbix::proxy (
     'UNDEF' => $zabbix::params::dbuser,
     default => $dbuser
   }
+  $dbport_real = $dbport ? {
+    'UNDEF' => $zabbix::params::dbport,
+    default => $dbport
+  }
   $dbpassword_real = $dbpassword ? {
     'UNDEF' => $zabbix::params::dbpassword,
     default => $dbpassword
   }
   $dbrootpassword_real = $dbrootpassword ? {
     'UNDEF' => $zabbix::params::dbrootpassword,
-    default => dbrootpassword
+    default => $dbrootpassword
   }
   $managedb_real = $managedb ? {
     'UNDEF' => $zabbix::params::managedb,
@@ -91,6 +101,9 @@ class zabbix::proxy (
     'UNDEF' => $zabbix::params::proxy_parameters,
     default => $proxy_parameters
   }
+
+  $proxy_parameters_real['LogFile'] = "${log_d_real}/zabbix_proxy.log"
+  $proxy_parameters_real['PidFile'] = "${run_d_real}/zabbix_proxy.pid"
 
   # Evaluate template as late as possible
   $content_real = $content ? {
@@ -125,6 +138,7 @@ class zabbix::proxy (
 
   case $ensure_real {
     present: {
+
       if $run_d_real == $zabbix::params::run_dir {
         Package['zabbix::proxy'] -> File['zabbix/run_d']
         realize(File['zabbix/run_d'])
@@ -138,6 +152,7 @@ class zabbix::proxy (
           mode    => '0644'
         }
       }
+
       if $log_d_real == $zabbix::params::log_dir {
         Package['zabbix::proxy'] -> File['zabbix/log_d']
         realize(File['zabbix/log_d'])
@@ -151,16 +166,19 @@ class zabbix::proxy (
           mode    => '0640'
         }
       }
+
       if $source_real != '' {
         File['zabbix/proxy/conf'] { source => $source_real }
       }
       elsif $content_real != '' {
         File['zabbix/proxy/conf'] { content => $content_real }
       }
+
       if $autorestart_real {
         File['zabbix/proxy/conf'] { notify => Service['zabbix::proxy'] }
-        File_line['set_init_script_run_dir'] { notify => Service['zabbix::proxy'] }
+        File_line['set_proxy_init_script_run_dir'] { notify => Service['zabbix::proxy'] }
       }
+
       if $zabbix::params::proxy_hasstatus {
         Service['zabbix::proxy'] {
           hasstatus => true
@@ -174,32 +192,42 @@ class zabbix::proxy (
           pattern   => $zabbix::params::proxy_pattern,
         }
       }
-      if $managedb == true {
-        if $dbrootpassword == undef {
+
+      if $managedb_real == true {
+        if $dbrootpassword_real == '' {
           fail('You must set dbrootpassword when managedb is set to true')
         }
-        file { 'zabbix/proxy/preseed':
-          path    => $zabbix::params::proxy_preseed_file,
-          ensure  => present,
-          mode    => '0400',
-          owner   => 'root',
-          group   => 'root',
-          before  => Package['zabbix::proxy']
-        } 
-        File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb') }
-        File['zabbix/proxy/preseed'] { ensure => present, content => template('zabbix/proxy/preseed.erb') }
-        Package['zabbix::proxy'] { responsefile => $zabbix::params::proxy_preseed_file, require => Package['mysql/packages'] }       
-        realize(Package['mysql/packages'])
+        if $::operatingsystem in [ 'Ubuntu', 'Debian' ] {
+          file { 'zabbix::proxy/responsefile':
+            ensure  => present,
+            path    => $zabbix::params::proxy_preseed_file,
+            mode    => '0400',
+            owner   => 'root',
+            group   => 'root',
+            content => template('zabbix/proxy/preseed.erb'),
+            before  => Package['zabbix::proxy']
+          } 
+          Package['zabbix::proxy'] {
+            responsefile  => $zabbix::params::proxy_preseed_file,
+            require       => File['zabbix::proxy/responsefile']
+          }
+        }
+        class { 'zabbix::mysql':
+          root_password => $dbrootpassword_real
+        } ->
+        Package['zabbix::proxy']
       }
+
       # Should set the pid file dir in the zabbix proxy init script
       # Why can't this be overrided in a sourced variable file..
-      file_line { 'set_init_script_run_dir':
+      file_line { 'set_proxy_init_script_run_dir':
         ensure  => present,
         path    => $zabbix::params::proxy_init,
         line    => "DIR=${run_d_real}",
         match   => '^DIR=.*$',
         require => Package['zabbix::proxy']
       }
+
       file { 'zabbix/proxy/conf':
         ensure  => present,
         path    => $zabbix::params::proxy_conf,
@@ -207,14 +235,16 @@ class zabbix::proxy (
         group   => $zabbix::params::group,
         mode    => '0640'
       }
+
       service { 'zabbix::proxy':
         ensure    => $service_status_real,
         name      => $zabbix::params::proxy_service,
         enable    => $service_enable_real,
         require   => [ Package['zabbix::proxy'], File['zabbix/proxy/conf'] ]
       }
-      Package['zabbix::proxy'] -> File['zabbix/proxy/conf']
-      Package['zabbix::proxy'] -> File <| tag == 'proxy' |>
+
+      Package['zabbix::proxy'] -> File['zabbix/proxy/conf','zabbix/conf_d']
+
     }
     default: {}
   }

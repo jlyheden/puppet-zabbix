@@ -50,55 +50,6 @@ class zabbix {
       owner   => 'root',
       group   => $zabbix::params::group,
       mode    => '0640';
-    'zabbix/server/preseed':
-     tag     => server,
-            path    => $zabbix::params::server_preseed_file,
-            ensure  => undef,
-            mode    => 400,
-            owner   => root,
-            group   => root,
-            before  => Package['zabbix/server/package'];
-        'zabbix/frontend/preseed':
-            tag     => frontend,
-            path    => $zabbix::params::frontend_preseed_file,
-            ensure  => undef,
-            mode    => 400,
-            owner   => root,
-            group   => root,
-            before  => Package['zabbix/frontend/package'];
-    }
-
-    @package {
-        'zabbix/server/package':
-            ensure  => present,
-            name    => $zabbix::params::server_package;
-        'zabbix/frontend/package':
-            ensure  => present,
-            name    => $zabbix::params::frontend_package;
-        'mysql/packages':
-            ensure       => present,
-            name         => $zabbix::params::mysql_packages,
-            responsefile => $::operatingsystem ? {
-              ubuntu     => $zabbix::params::mysql_preseed_file,
-              default    => undef,
-            },
-            require      => $::operatingsystem ? {
-              ubuntu     => File['mysql/preseed'],
-              default    => undef,
-            }
-    }
-
-    @service {
-        'zabbix/server/service':
-            ensure  => running,
-            enable  => true,
-            hasstatus => $zabbix::params::server_hasstatus,
-            restart => "/etc/init.d/${zabbix::params::server_service} restart",
-            stop    => "/etc/init.d/${zabbix::params::server_service} stop",
-            start   => "/etc/init.d/${zabbix::params::server_service} start",
-            pattern => $zabbix::params::server_pattern,
-            name    => $zabbix::params::server_service,
-            require => Package['zabbix/server/package']
-    }
+  }
 
 }

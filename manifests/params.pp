@@ -1,5 +1,5 @@
-# Params class for zabbix
-# Put whatever hooks for extlookup / hiera here
+# == Class: zabbix::params
+#
 class zabbix::params {
 
   # Standard service settings
@@ -19,8 +19,15 @@ class zabbix::params {
   $uid = undef
   $gid = undef
   $config_dir = '/etc/zabbix'
-  $run_dir = "/var/run/zabbix"
-  $log_dir = "/var/log/zabbix"
+  $run_dir = '/var/run/zabbix'
+  $log_dir = '/var/log/zabbix'
+  $dbhost = 'localhost'
+  $dbname = 'zabbix'
+  $dbuser = 'zabbix'
+  $dbpassword = ''
+  $dbrootpassword = ''
+  $dbport = ''
+  $managedb = false
 
   # Zabbix Server settings
   $server_alertd_dir = "${config_dir}/alert.d"
@@ -29,11 +36,17 @@ class zabbix::params {
   # Zabbix Proxy settings
   $proxy_alertd_dir = "${config_dir}/alert.d"
   $proxy_externalscripts_dir = "${config_dir}/externalscripts"
+  $proxy_source = ''
+  $proxy_server = 'localhost'
+  $proxy_parameters = {}
+  $proxy_conf = "${config_dir}/zabbix_proxy.conf"
+  $proxy_init = '/etc/init.d/zabbix-proxy'
+  $proxy_template = 'zabbix/proxy/zabbix_proxy.conf.erb'
 
   # Zabbix Agent settings
   $agent_server = 'localhost'
   $agent_source = ''
-  $agent_init = "/etc/init.d/zabbix-agent"
+  $agent_init = '/etc/init.d/zabbix-agent'
   $agent_conf = "${config_dir}/zabbix_agentd.conf"
   $agent_conf_d = "${config_dir}/zabbix_agentd.d"
   $agent_conf_d_purge = true
@@ -49,8 +62,9 @@ class zabbix::params {
       #$config_dir = '/etc/zabbix'
       #$alertd_dir = "${config_dir}/alert.d"
       #$pid_dir = '/var/run/zabbix'
-      #$mysql_packages = [ 'mysql-client-5.1', 'mysql-common', 'mysql-server-5.1', 'mysql-server', 'dbconfig-common' ]
-      #$mysql_preseed_file = '/var/local/mysql.preseed'
+      $mysql_packages = [ 'mysql-client-5.1', 'mysql-common', 'mysql-server-5.1', 'mysql-server', 'dbconfig-common' ]
+      $mysql_preseed_file = '/var/local/mysql.preseed'
+      $mysql_service = 'mysql'
       $bug_5610 = $::puppetversion ? {
         /2\.6\.[0-6]/ => true,
         default => false,
@@ -79,15 +93,12 @@ class zabbix::params {
       }
       # Proxy settings
       $proxy_package = 'zabbix-proxy-mysql'
-      $proxy_config_file = "${config_dir}/zabbix_proxy.conf"
       $proxy_service = 'zabbix-proxy'
       $proxy_pattern = 'zabbix_proxy'
-      $proxy_log_dir = '/var/log/zabbix-proxy'
-      $proxy_manage_db = false
       $proxy_preseed_file = '/var/local/zabbix-proxy.preseed'
       $proxy_hasstatus = $bug_5610 ? {
         true    => false,
-        default => true 
+        default => true
       }
       # Frontend settings
       $frontend_config_file = "${config_dir}/dbconfig.php"

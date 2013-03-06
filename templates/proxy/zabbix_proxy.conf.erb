@@ -1,12 +1,15 @@
 # MANAGED BY PUPPET
 
-Server=<%= server %>
-DBHost=<%= dbhost %>
-DBName=<%= dbname %>
-DBUser=<%= dbuser %>
-<%- if dbpassword != '' -%>
-DBPassword=<%= dbpassword %>
+Server=<%= server_real %>
+DBHost=<%= dbhost_real %>
+DBName=<%= dbname_real %>
+DBUser=<%= dbuser_real %>
+<%- if dbpassword_real != '' -%>
+DBPassword=<%= dbpassword_real %>
+<%- end -%>
+<%- if dbport_real != '' -%>
+DBPort <%= dbport_real %>
 <%- end -%>
 <%- proxy_parameters_real.sort_by { |k,v| k }.each do |k| -%>
-  <%= k[0] %>=<%= k[1] %>
+<%= k[0] %>=<%= k[1] %>
 <%- end -%>
