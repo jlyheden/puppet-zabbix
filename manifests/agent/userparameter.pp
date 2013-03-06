@@ -54,14 +54,14 @@ define zabbix::agent::userparameter (
     File[$resourcename] { notify => Service['zabbix::agent'] }
   }
 
- 	@file { "zabbix/agent/conf_d/${name}":
- 		ensure	=> $ensure,
+  @file { "zabbix/agent/conf_d/${name}":
+    ensure  => $ensure,
     tag     => 'userparameter',
     path    => "${zabbix::params::agent_conf_d}/${filename}",
- 		owner	  => $zabbix::params::user,
- 		group	  => $zabbix::params::group,
- 		mode	  => '0640',
+    owner   => $zabbix::params::user,
+    group   => $zabbix::params::group,
+    mode    => '0640',
     require => File['zabbix/agent/conf_d'],
- 	}
+  }
 
 }
