@@ -19,7 +19,7 @@ describe 'zabbix::agent::userparameter' do
       :command => 'ps aux'
     } } 
     it do
-      should contain_file('zabbix/agent/conf_d/process_list').with(
+      should contain_file('zabbix::agent/conf_d/process_list').with(
         'ensure'  => 'present',
         'path'    => '/etc/zabbix/zabbix_agentd.d/process_list',
         'owner'   => 'zabbix',
@@ -37,7 +37,7 @@ describe 'zabbix::agent::userparameter' do
       :source => 'puppet:///modules/module/file'
     } }
     it do
-      should contain_file('zabbix/agent/conf_d/process_list').with(
+      should contain_file('zabbix::agent/conf_d/process_list').with(
         'ensure'  => 'present',
         'path'    => '/etc/zabbix/zabbix_agentd.d/process_list',
         'owner'   => 'zabbix',
