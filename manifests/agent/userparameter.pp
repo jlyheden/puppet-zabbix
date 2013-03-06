@@ -4,44 +4,64 @@
 #
 # === Parameters
 #
-# [*name*]
-#   Name of this puppet resource, UserParameter and filename in include dir.
-#
-# [*command*]
-#   Command to execute in UserParameter. Needs to be set if *content* is not set.
-#
-# [*parameters*]
-#   Optional. Boolean if a [*] entry should be added to the UserParameter, allowing Zabbix to pass arguments to the command. Default: false
-#
-# [*content*]
-#   Custom template data. Needs to be set if *command* is not set.
-#
 # === Sample Usage
 #
-# zabbix::agent::userparameter { "process.list": command => 'pgrep $1 |wc -l', parameters => true }
+# TBD
 #
-define zabbix::agent::userparameter ( $command = undef,
-                                      $parameters = false,
-                                      $content = undef ) {
+define zabbix::agent::userparameter (
+  $ensure     = 'present',
+  $command    = 'UNDEF',
+  $parameters = false,
+  $source     = 'UNDEF',
+  $content    = 'UNDEF'
+) {
+
+  include zabbix::params
+
+  # Input validation
+  $validate_re($ensure,$zabbix::params::valid_ensure_values)
 
   $filename = regsubst($name, '\W', '','G')
-  if $command == undef and $content == undef {
-    fail('One of the following parameters are required: command, source, content')
+  $resourcename = "zabbix/agent/conf_d/${name}"
+
+  # Param checking
+  # This is quite ugly, is it possible to make it less so?
+  if $command == 'UNDEF' and $source == 'UNDEF' and $content == 'UNDEF' {
+    fail('One of the following parameters must be set: command, source, content')
+  }
+  if $command != 'UNDEF' and ($source != 'UNDEF' or $content != 'UNDEF') {
+    fail('Parameter command, source or content cannot be set at the same time.')
+  }
+  if $source != 'UNDEF' and ($command != 'UNDEF' or $content != 'UNDEF') {
+    fail('Parameter command, source or content cannot be set at the same time.')
+  }
+  if $content != 'UNDEF' and ($command != 'UNDEF' or $source != 'UNDEF') {
+    fail('Parameter command, source or content cannot be set at the same time.')
   }
 
- 	file { "zabbix/agent/config/include/${name}":
- 		ensure	=> present,
-    tag     => agent,
-    path    => "${zabbix::params::agent_config_include}/${filename}.conf",
+  # Provides the proper params to the file resource
+  if $command != 'UNDEF' {
+    $content_real = template('zabbix/agent/userparameter.erb')
+    File[$resourcename] { content => $content_real }
+  }
+  if $content != 'UNDEF' {
+    File[$resourcename] { content => $content }
+  }
+  if $source != 'UNDEF' {
+    File[$resourcename] { source => $source }
+  }
+  if $zabbix::agent::autorestart {
+    File[$resourcename] { notify => Service['zabbix::agent'] }
+  }
+
+ 	@file { "zabbix/agent/conf_d/${name}":
+ 		ensure	=> $ensure,
+    tag     => 'userparameter',
+    path    => "${zabbix::params::agent_conf_d}/${filename}.conf",
  		owner	  => $zabbix::params::user,
  		group	  => $zabbix::params::group,
- 		mode	  => 644,
- 		content	=> $content ? {
-      undef   => template('zabbix/agent/userparameter.erb'),
-      default => $content,
-    },
-    notify  => Service['zabbix/agent/service'],
-    require => File['zabbix/agent/config/include/dir'],
+ 		mode	  => '0640',
+    require => File['zabbix/agent/conf_d'],
  	}
 
 }
