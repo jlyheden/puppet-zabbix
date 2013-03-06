@@ -19,7 +19,7 @@ define zabbix::agent::userparameter (
   include zabbix::params
 
   # Input validation
-  $validate_re($ensure,$zabbix::params::valid_ensure_values)
+  validate_re($ensure,$zabbix::params::valid_ensure_values)
 
   $filename = regsubst($name, '\W', '','G')
   $resourcename = "zabbix/agent/conf_d/${name}"
@@ -57,7 +57,7 @@ define zabbix::agent::userparameter (
  	@file { "zabbix/agent/conf_d/${name}":
  		ensure	=> $ensure,
     tag     => 'userparameter',
-    path    => "${zabbix::params::agent_conf_d}/${filename}.conf",
+    path    => "${zabbix::params::agent_conf_d}/${filename}",
  		owner	  => $zabbix::params::user,
  		group	  => $zabbix::params::group,
  		mode	  => '0640',

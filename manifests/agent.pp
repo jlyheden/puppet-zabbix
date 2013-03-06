@@ -193,6 +193,7 @@ class zabbix::agent (
         require   => [ Package['zabbix::agent'], File['zabbix/agent/conf','zabbix/agent/conf_d' ] ]
       }
       # Let package create user
+      File <| tag == 'userparameter' |>
       Package['zabbix::agent'] -> File['zabbix/agent/conf','zabbix/agent/conf_d']
     }
     default: {}
