@@ -17,21 +17,19 @@ class zabbix {
   @file {
     'zabbix/conf_d':
       ensure	=> directory,
-      tag     => [global,agent,server,proxy,frontend],
+      tag     => [agent,server,proxy,frontend],
       path    => $zabbix::params::config_dir,
       owner   => 'root',
       group   => 'root',
       mode	  => '0644';
     'zabbix/run_d':
       ensure  => directory,
-      tag     => [global,agent,server,proxy],
       path    => $zabbix::params::run_dir,
       mode    => '0644',
       owner   => $zabbix::params::user,
       group   => $zabbix::params::group;
     'zabbix/log_d':
       ensure  => directory,
-      tag     => [global,agent,server,proxy],
       path    => $zabbix::params::log_dir,
       mode    => '0640',
       owner   => $zabbix::params::user,

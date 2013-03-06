@@ -243,7 +243,8 @@ class zabbix::proxy (
         require   => [ Package['zabbix::proxy'], File['zabbix/proxy/conf'] ]
       }
 
-      Package['zabbix::proxy'] -> File['zabbix/proxy/conf','zabbix/conf_d']
+      Package['zabbix::proxy'] -> File['zabbix/proxy/conf']
+      Package['zabbix::proxy'] -> File <| tag == 'proxy' |>
 
     }
     default: {}
