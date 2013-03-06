@@ -28,14 +28,10 @@ class zabbix::params {
   $dbrootpassword = ''
   $dbport = ''
   $managedb = false
-
-  # Zabbix Server settings
-  $server_alertd_dir = "${config_dir}/alert.d"
-  $server_externalscripts_dir = "${config_dir}/externalscripts"
+  $alertd_dir = "${config_dir}/alert.d"
+  $externalscripts_dir = "${config_dir}/externalscripts"
 
   # Zabbix Proxy settings
-  $proxy_alertd_dir = "${config_dir}/alert.d"
-  $proxy_externalscripts_dir = "${config_dir}/externalscripts"
   $proxy_source = ''
   $proxy_server = 'localhost'
   $proxy_parameters = {}
