@@ -4,8 +4,8 @@
 # Replace with references to your own mysql module
 #
 class zabbix::mysql (
-  $root_password,
   $ensure         = 'UNDEF',
+  $root_password  = 'UNDEF',
   $my_cnf         = 'UNDEF',
   $source         = 'UNDEF',
 ) inherits zabbix {
@@ -21,6 +21,9 @@ class zabbix::mysql (
   $source_real = $source ? {
     'UNDEF' => '',
     default => $source
+  }
+  if $root_password == 'UNDEF' {
+    fail('Parameter root_password must be set')
   }
 
   validate_re($ensure_real,$zabbix::params::valid_ensure_values)
@@ -47,7 +50,7 @@ class zabbix::mysql (
         name      => $zabbix::params::mysql_service,
         enable    => true,
         require   => Package['zabbix::mysql']
-      } 
+      }
     }
     default: {}
   }

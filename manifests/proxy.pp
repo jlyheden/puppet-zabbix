@@ -27,7 +27,7 @@ class zabbix::proxy (
   $dbpassword       = 'UNDEF',
   $dbrootpassword   = 'UNDEF',
   $managedb         = 'UNDEF',
-  $proxy_parameters = 'UNDEF' 
+  $proxy_parameters = 'UNDEF'
 ) inherits zabbix {
 
   include zabbix::params
@@ -206,7 +206,7 @@ class zabbix::proxy (
             group   => 'root',
             content => template('zabbix/proxy/preseed.erb'),
             before  => Package['zabbix::proxy']
-          } 
+          }
           Package['zabbix::proxy'] {
             responsefile  => $zabbix::params::proxy_preseed_file,
             require       => File['zabbix::proxy/responsefile']

@@ -16,12 +16,12 @@ class zabbix {
 
   @file {
     'zabbix/conf_d':
-      ensure	=> directory,
+      ensure  => directory,
       tag     => [agent,server,proxy,frontend],
       path    => $zabbix::params::config_dir,
       owner   => 'root',
       group   => 'root',
-      mode	  => '0644';
+      mode    => '0644';
     'zabbix/run_d':
       ensure  => directory,
       path    => $zabbix::params::run_dir,

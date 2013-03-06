@@ -25,7 +25,7 @@ describe 'zabbix::agent' do
       'require' => 'Package[zabbix::agent]',
       'notify'  => 'Service[zabbix::agent]'
     ) end
-    it do should contain_file('zabbix/agent/conf').with(
+    it do should contain_file('zabbix::agent/conf').with(
       'ensure'  => 'present',
       'path'    => '/etc/zabbix/zabbix_agentd.conf',
       'owner'   => 'root',
@@ -38,7 +38,7 @@ LogFile=/var/log/zabbix/zabbix_agentd.log
 PidFile=/var/run/zabbix/zabbix_agentd.pid
 Include=/etc/zabbix/zabbix_agentd.d/
 ") end
-    it do should contain_file('zabbix/agent/conf_d').with(
+    it do should contain_file('zabbix::agent/conf_d').with(
       'ensure'  => 'directory',
       'path'    => '/etc/zabbix/zabbix_agentd.d',
       'owner'   => 'root',
@@ -64,8 +64,8 @@ Include=/etc/zabbix/zabbix_agentd.d/
       'mode'    => '0640'
     ) end
     it do
-      should_not contain_file('zabbix/agent/run_d')
-      should_not contain_file('zabbix/agent/log_d')
+      should_not contain_file('zabbix::agent/run_d')
+      should_not contain_file('zabbix::agent/log_d')
     end
   end
 
@@ -74,20 +74,20 @@ Include=/etc/zabbix/zabbix_agentd.d/
       :log_d  => '/logdir',
       :run_d  => '/rundir'
     } }
-    it do should contain_file('zabbix/agent/conf').with_content("# MANAGED BY PUPPET
+    it do should contain_file('zabbix::agent/conf').with_content("# MANAGED BY PUPPET
 Server=localhost
 LogFile=/logdir/zabbix_agentd.log
 PidFile=/rundir/zabbix_agentd.pid
 Include=/etc/zabbix/zabbix_agentd.d/
 ") end
-    it do should contain_file('zabbix/agent/run_d').with(
+    it do should contain_file('zabbix::agent/run_d').with(
       'ensure'  => 'directory',
       'path'    => '/rundir',
       'owner'   => 'zabbix',
       'group'   => 'zabbix',
       'mode'    => '0644'
     ) end
-    it do should contain_file('zabbix/agent/log_d').with(
+    it do should contain_file('zabbix::agent/log_d').with(
       'ensure'  => 'directory',
       'path'    => '/logdir',
       'owner'   => 'zabbix',

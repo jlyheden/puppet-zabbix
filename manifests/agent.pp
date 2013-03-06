@@ -110,8 +110,8 @@ class zabbix::agent (
         Package['zabbix::agent'] -> File['zabbix/run_d']
         realize(File['zabbix/run_d'])
       } else {
-        Package['zabbix::agent'] -> File['zabbix/agent/run_d']
-        file { 'zabbix/agent/run_d':
+        Package['zabbix::agent'] -> File['zabbix::agent/run_d']
+        file { 'zabbix::agent/run_d':
           ensure  => directory,
           path    => $run_d_real,
           owner   => $zabbix::params::user,
@@ -123,8 +123,8 @@ class zabbix::agent (
         Package['zabbix::agent'] -> File['zabbix/log_d']
         realize(File['zabbix/log_d'])
       } else {
-        Package['zabbix::agent'] -> File['zabbix/agent/log_d']
-        file { 'zabbix/agent/log_d':
+        Package['zabbix::agent'] -> File['zabbix::agent/log_d']
+        file { 'zabbix::agent/log_d':
           ensure  => directory,
           path    => $log_d_real,
           owner   => $zabbix::params::user,
@@ -133,18 +133,18 @@ class zabbix::agent (
         }
       }
       if $source_real != '' {
-        File['zabbix/agent/conf'] { source => $source_real }
+        File['zabbix::agent/conf'] { source => $source_real }
       }
       elsif $content_real != '' {
-        File['zabbix/agent/conf'] { content => $content_real }
+        File['zabbix::agent/conf'] { content => $content_real }
       }
       if $autorestart_real {
-        File['zabbix/agent/conf'] { notify => Service['zabbix::agent'] }
-        File['zabbix/agent/conf_d'] { notify => Service['zabbix::agent'] }
+        File['zabbix::agent/conf'] { notify => Service['zabbix::agent'] }
+        File['zabbix::agent/conf_d'] { notify => Service['zabbix::agent'] }
         File_line['set_init_script_run_dir'] { notify => Service['zabbix::agent'] }
       }
       if $conf_d_purge_real {
-        File['zabbix/agent/conf_d'] {
+        File['zabbix::agent/conf_d'] {
           force   => true,
           purge   => true,
           recurse => true
@@ -172,14 +172,14 @@ class zabbix::agent (
         match   => '^DIR=.*$',
         require => Package['zabbix::agent']
       }
-      file { 'zabbix/agent/conf':
+      file { 'zabbix::agent/conf':
         ensure  => present,
         path    => $zabbix::params::agent_conf,
         owner   => 'root',
         group   => $zabbix::params::group,
         mode    => '0640'
       }
-      file { 'zabbix/agent/conf_d':
+      file { 'zabbix::agent/conf_d':
         ensure  => directory,
         path    => $zabbix::params::agent_conf_d,
         owner   => 'root',
@@ -190,11 +190,11 @@ class zabbix::agent (
         ensure    => $service_status_real,
         name      => $zabbix::params::agent_service,
         enable    => $service_enable_real,
-        require   => [ Package['zabbix::agent'], File['zabbix/agent/conf','zabbix/agent/conf_d' ] ]
+        require   => [ Package['zabbix::agent'], File['zabbix::agent/conf'], File['zabbix::agent/conf_d'] ]
       }
       # Let package create user
       File <| tag == 'userparameter' |>
-      Package['zabbix::agent'] -> File['zabbix/agent/conf','zabbix/agent/conf_d']
+      Package['zabbix::agent'] -> File['zabbix::agent/conf','zabbix::agent/conf_d']
     }
     default: {}
   }
