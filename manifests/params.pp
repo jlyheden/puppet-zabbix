@@ -32,7 +32,7 @@ class zabbix::params {
   $externalscripts_dir = "${config_dir}/externalscripts"
 
   # Zabbix Proxy settings
-  $proxy_dbname = 'zabbix-proxy'
+  $proxy_dbname = 'zabbix_proxy'
   $proxy_dbuser = 'zabbix_proxy'
   $proxy_source = ''
   $proxy_server = 'localhost'
