@@ -50,15 +50,8 @@ class zabbix {
       owner   => 'root',
       group   => $zabbix::params::group,
       mode    => '0640';
-        'mysql/preseed':
-            tag     => [server,frontend,proxy],
-            path    => $zabbix::params::mysql_preseed_file,
-            ensure  => undef,
-            mode    => 400,
-            owner   => root,
-            group   => root;
-        'zabbix/server/preseed':
-            tag     => server,
+    'zabbix/server/preseed':
+     tag     => server,
             path    => $zabbix::params::server_preseed_file,
             ensure  => undef,
             mode    => 400,
@@ -73,23 +66,12 @@ class zabbix {
             owner   => root,
             group   => root,
             before  => Package['zabbix/frontend/package'];
-        'zabbix/proxy/preseed':
-            tag     => proxy,
-            path    => $zabbix::params::proxy_preseed_file,
-            ensure  => undef,
-            mode    => 400,
-            owner   => root,
-            group   => root,
-            before  => Package['zabbix/proxy/package'],
     }
 
     @package {
         'zabbix/server/package':
             ensure  => present,
             name    => $zabbix::params::server_package;
-        'zabbix/proxy/package':
-            ensure  => present,
-            name    => $zabbix::params::proxy_package;
         'zabbix/frontend/package':
             ensure  => present,
             name    => $zabbix::params::frontend_package;
@@ -116,16 +98,7 @@ class zabbix {
             start   => "/etc/init.d/${zabbix::params::server_service} start",
             pattern => $zabbix::params::server_pattern,
             name    => $zabbix::params::server_service,
-            require => Package['zabbix/server/package'];
-        'zabbix/proxy/service':
-            ensure  => running,
-            enable  => true,
-            name    => $zabbix::params::proxy_service,
-            restart => "/etc/init.d/${zabbix::params::proxy_service} restart",
-            stop    => "/etc/init.d/${zabbix::params::proxy_service} stop",
-            start   => "/etc/init.d/${zabbix::params::proxy_service} start",
-            pattern => $zabbix::params::proxy_pattern,
-            require => Package['zabbix/proxy/package'];
+            require => Package['zabbix/server/package']
     }
 
 }

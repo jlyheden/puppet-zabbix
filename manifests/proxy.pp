@@ -4,186 +4,224 @@
 #
 # === Parameters
 #
-# [*nodename*]
-#   Optional. Name of this Zabbix proxy node. Default: $::hostname
-#
-# [*port*]
-#   Optional. Listening port for Zabbix Server. Default: 10051
-#
-# [*server_host*]
-#   Required. IP address or hostname of Zabbix server.
-#
-# [*server_port*]
-#   Optional. Port of Zabbix server. Default: 10051
-#
-# [*dbhost*]
-#   Required. IP address or hostname of database server.
-#
-# [*dbname*]
-#   Optional. Name of database. Default: zabbix_proxy
-#
-# [*dbuser*]
-#   Optional. Name of database user. Default: zabbix_proxy
-#
-# [*dbpassword*]
-#   Required. Password for database user.
-#
-# [*dbrootpassword*]
-#   Required if managedb is enabled. MySQL root password.
-#
-# [*managedb*]
-#   Optional. If zabbix-proxy installation should pull mysql-server from pkg repository and install it. Note this might conflict with other MySQL modules. Default: false
-#
-# [*heartbeatfrequency*]
-#   Optional. Frequency in seconds to send heartbeat messages. Default: 60
-#
-# [*startpollers*]
-#   Optional. Number of pre-forked instances of poller. Default: 5
-#
-# [*startipmipollers*]
-#   Optional. Number of pre-forked instances of IPMI poller. Default: 0
-#
-# [*startpollersunreachable*]
-#   Optional. Number of pre-forked instances of poller for unreachable hosts (including IPMI). Default: 1
-#
-# [*starttrappers*]
-#   Optional. Number of pre-forked instances of trapper. Default: 5
-#
-# [*startpingers*]
-#   Optional. Number of pre-forked instances of pinger. Default: 1
-#
-# [*startdiscovers*]
-#   Optional. Number of pre-forked instances of discover. Default: 1
-#
-# [*starthttppollers*]
-#   Optional. Number of pre-forked instances of web check. Default: 1
-#
-# [*housekeepingfrequency*]
-#   Optional. Interval in hours, at which housekeeping will be performed. Default: 1
-#
-# [*senderfrequency*]
-#   Optional. Interval in seconds, at which Zabbix will retry to send unsent alerts. Default: 30
-#
-# [*proxylocalbuffer*]
-#   Optional. Number of hours, in which proxy will buffer data. Default: 0
-#
-# [*proxyofflinebuffer*]
-#   Optional. Number of hours, in which proxy will buffer data in case of unavailable server. Default: 1
-#
-# [*housekeeping*]
-#   Optional. Boolean if housekeeping should be enabled. Default: true
-#
-# [*debuglevel*]
-#   Optional. Numerical log verbosity. Default: 3
-#
-# [*timeout*]
-#   Optional. Timeout in seconds, waiting for agent, SNMP or external check. Default: 5
-#
-# [*trappertimeout*]
-#   Optional. Timeout in seconds, how many seconds trapper may process new data. Default: 5
-#
-# [*unreachableperiod*]
-#   Optional. Period in seconds, after how long time a host is set as unreachable. Default: 45
-#
-# [*unavailabledelay*]
-#   Optional. Delay in seconds, how often host is checked for avaibility during the unavailability period. Default: 60
-#
-# [*logfilesize*]
-#   Optional. Size in MB after which the daemon log file will be rotated. Default: 10
-#
-# [*tmpdir*]
-#   Optional. Path to temp directory. Default: /tmp
-#
-# [*pingerfrequency*]
-#   Optional. Frequency in seconds. Default: 60
-#
-# [*autoupgrade*]
-#   Optional. Boolean to automatically install latest version or pin to specific version. Default: false
-#
-# [*custom_template*]
-#   Optional. Path to template file to use in place for zabbix_proxy.conf. Default: undef
-#
-# === Requires
-#
 # === Sample Usage
 #
-# class { 'zabbix-proxy':
-#   server_host     => 'zabbix-server.localdomain',
-#   dbhost          => 'localhost',
-#   dbpassword      => 'secretzabbixpw'
-#   dbrootpassword  => 'omgmysqlrootpw',
-#   autoupgrade     => true
-# }
+# TBD
 #
-class zabbix::proxy ( $nodename = $zabbix::params::nodename,
-                      $port = $zabbix::params::proxy_port,
-                      $server_host,
-                      $server_port = $zabbix::params::server_port,
-                      $dbhost,
-                      $dbname = $zabbix::params::proxy_dbname,
-                      $dbuser = $zabbix::params::proxy_dbuser,
-                      $dbpassword,
-                      $dbrootpassword = undef,
-                      $managedb = $zabbix::params::proxy_manage_db,
-                      $heartbeatfrequency = $zabbix::params::proxy_heartbeatfrequency,
-                      $startpollers = $zabbix::params::proxy_startpollers,
-                      $startipmipollers = $zabbix::params::proxy_startipmipollers,
-                      $startpollersunreachable = $zabbix::params::proxy_startpollersunreachable,
-                      $starttrappers = $zabbix::params::proxy_starttrappers,
-                      $startpingers = $zabbix::params::proxy_startpingers,
-                      $startdiscoverers = $zabbix::params::proxy_startdiscoverers,
-                      $starthttppollers = $zabbix::params::proxy_starthttppollers,
-                      $housekeepingfrequency = $zabbix::params::proxy_housekeepingfrequency,
-                      $configfrequency = $zabbix::params::proxy_configfrequency,
-                      $senderfrequency = $zabbix::params::proxy_senderfrequency,
-                      $proxylocalbuffer = $zabbix::params::proxy_proxylocalbuffer,
-                      $proxyofflinebuffer = $zabbix::params::proxy_proxyofflinebuffer,
-                      $debuglevel = $zabbix::params::proxy_debuglevel,
-                      $timeout = $zabbix::params::proxy_timeout,
-                      $trappertimeout = $zabbix::params::proxy_trappertimeout,
-                      $unreachableperiod = $zabbix::params::proxy_unreachableperiod,
-                      $unavailabledelay = $zabbix::params::proxy_unavailabledelay,
-                      $logfilesize = $zabbix::params::proxy_logfilesize,
-                      $tmpdir = $zabbix::params::proxy_tmpdir,
-                      $pingerfrequency = $zabbix::params::proxy_pingerfrequency,
-                      $autoupgrade = false,
-                      $custom_template = undef ) inherits zabbix {
+class zabbix::proxy (
+  $ensure           = 'UNDEF',
+  $service_enable   = 'UNDEF',
+  $service_status   = 'UNDEF',
+  $autoupgrade      = 'UNDEF',
+  $autorestart      = 'UNDEF',
+  $source           = 'UNDEF',
+  $content          = 'UNDEF',
+  $conf_d_purge     = 'UNDEF',
+  $run_d            = 'UNDEF',
+  $log_d            = 'UNDEF',
+  $server           = 'UNDEF',
+  $dbname           = 'UNDEF',
+  $dbuser           = 'UNDEF',
+  $dbpassword       = 'UNDEF',
+  $dbrootpassword   = 'UNDEF',
+  $managedb         = 'UNDEF',
+  $proxy_parameters = 'UNDEF' 
+) {
 
-    include zabbix::params
+  include zabbix::params
 
-    case $autoupgrade {
-      true: {
-        Package['zabbix/proxy/package'] { ensure => latest }
+  # puppet 2.6 compatibility
+  $ensure_real = $ensure ? {
+    'UNDEF' => $zabbix::params::ensure,
+    default => $ensure
+  }
+  $service_enable_real = $service_enable ? {
+    'UNDEF' => $zabbix::params::service_enable,
+    default => $service_enable
+  }
+  $service_status_real = $service_status ? {
+    'UNDEF' => $zabbix::params::service_status,
+    default => $service_status
+  }
+  $autoupgrade_real = $autoupgrade ? {
+    'UNDEF' => $zabbix::params::autoupgrade,
+    default => $autoupgrade
+  }
+  $autorestart_real = $autorestart ? {
+    'UNDEF' => $zabbix::params::autorestart,
+    default => $autorestart
+  }
+  $source_real = $source ? {
+    'UNDEF' => $zabbix::params::proxy_source,
+    default => $source
+  }
+  $run_d_real = $run_d ? {
+    'UNDEF' => $zabbix::params::run_dir,
+    default => $run_d
+  }
+  $log_d_real = $log_d ? {
+    'UNDEF' => $zabbix::params::log_dir,
+    default => $log_d
+  }
+  $server_real = $server ? {
+    'UNDEF' => $zabbix::params::proxy_server,
+    default => $server
+  }
+  $dbname_real = $dbname ? {
+    'UNDEF' => $zabbix::params::dbname,
+    default => $dbname
+  }
+  $dbuser_real = $dbuser ? {
+    'UNDEF' => $zabbix::params::dbuser,
+    default => $dbuser
+  }
+  $dbpassword_real = $dbpassword ? {
+    'UNDEF' => $zabbix::params::dbpassword,
+    default => $dbpassword
+  }
+  $dbrootpassword_real = $dbrootpassword ? {
+    'UNDEF' => $zabbix::params::dbrootpassword,
+    default => dbrootpassword
+  }
+  $managedb_real = $managedb ? {
+    'UNDEF' => $zabbix::params::managedb,
+    default => $managedb
+  }
+  $proxy_parameters_real = $proxy_parameters ? {
+    'UNDEF' => $zabbix::params::proxy_parameters,
+    default => $proxy_parameters
+  }
+
+  # Evaluate template as late as possible
+  $content_real = $content ? {
+    'UNDEF'   => $zabbix::params::proxy_template ? {
+      ''      => '',
+      default => template($zabbix::params::proxy_template)
+    },
+    default   => $content
+  }
+
+  # Input validation
+  validate_re($ensure_real,$zabbix::params::valid_ensure_values)
+  validate_re($service_status_real,$zabbix::params::valid_service_statuses)
+  validate_bool($service_enable_real)
+  validate_bool($autoupgrade_real)
+  validate_bool($autorestart_real)
+  validate_bool($managedb_real)
+  if $source_real != ''  and $content_real != '' {
+    fail('Only one of parameters source and content can be set')
+  }
+
+  if $ensure_real == 'present' and $autoupgrade_real == true {
+    $ensure_package = 'latest'
+  } else {
+    $ensure_package = $ensure_real
+  }
+
+  $ensure_service = $service_status_real ? {
+    'unmanaged' => undef,
+    default     => $service_status_real
+  }
+
+  case $ensure_real {
+    present: {
+      if $run_d_real == $zabbix::params::run_dir {
+        Package['zabbix::proxy'] -> File['zabbix/run_d']
+        realize(File['zabbix/run_d'])
+      } else {
+        Package['zabbix::proxy'] -> File['zabbix/proxy/run_d']
+        file { 'zabbix/proxy/run_d':
+          ensure  => directory,
+          path    => $run_d_real,
+          owner   => $zabbix::params::user,
+          group   => $zabbix::params::group,
+          mode    => '0644'
+        }
       }
-      /[0-9]+[0-9\.\-\_\:a-zA-Z]/: {
-        Package['zabbix/proxy/package'] { ensure => $autoupgrade }
+      if $log_d_real == $zabbix::params::log_dir {
+        Package['zabbix::proxy'] -> File['zabbix/log_d']
+        realize(File['zabbix/log_d'])
+      } else {
+        Package['zabbix::proxy'] -> File['zabbix/proxy/log_d']
+        file { 'zabbix/proxy/log_d':
+          ensure  => directory,
+          path    => $log_d_real,
+          owner   => $zabbix::params::user,
+          group   => $zabbix::params::group,
+          mode    => '0640'
+        }
       }
-      false: {
-        # Do nothing
+      if $source_real != '' {
+        File['zabbix/proxy/conf'] { source => $source_real }
       }
-      default: {
-        warning('Parameter autoupgrade only supports values: true, false or version-number')
+      elsif $content_real != '' {
+        File['zabbix/proxy/conf'] { content => $content_real }
       }
+      if $autorestart_real {
+        File['zabbix/proxy/conf'] { notify => Service['zabbix::proxy'] }
+        File_line['set_init_script_run_dir'] { notify => Service['zabbix::proxy'] }
+      }
+      if $zabbix::params::proxy_hasstatus {
+        Service['zabbix::proxy'] {
+          hasstatus => true
+        }
+      } else {
+        Service['zabbix::proxy'] {
+          hasstatus => false,
+          restart   => "/etc/init.d/${zabbix::params::proxy_service} restart",
+          stop      => "/etc/init.d/${zabbix::params::proxy_service} stop",
+          start     => "/etc/init.d/${zabbix::params::proxy_service} start",
+          pattern   => $zabbix::params::proxy_pattern,
+        }
+      }
+      if $managedb == true {
+        if $dbrootpassword == undef {
+          fail('You must set dbrootpassword when managedb is set to true')
+        }
+        file { 'zabbix/proxy/preseed':
+          path    => $zabbix::params::proxy_preseed_file,
+          ensure  => present,
+          mode    => '0400',
+          owner   => 'root',
+          group   => 'root',
+          before  => Package['zabbix::proxy']
+        } 
+        File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb') }
+        File['zabbix/proxy/preseed'] { ensure => present, content => template('zabbix/proxy/preseed.erb') }
+        Package['zabbix::proxy'] { responsefile => $zabbix::params::proxy_preseed_file, require => Package['mysql/packages'] }       
+        realize(Package['mysql/packages'])
+      }
+      # Should set the pid file dir in the zabbix proxy init script
+      # Why can't this be overrided in a sourced variable file..
+      file_line { 'set_init_script_run_dir':
+        ensure  => present,
+        path    => $zabbix::params::proxy_init,
+        line    => "DIR=${run_d_real}",
+        match   => '^DIR=.*$',
+        require => Package['zabbix::proxy']
+      }
+      file { 'zabbix/proxy/conf':
+        ensure  => present,
+        path    => $zabbix::params::proxy_conf,
+        owner   => 'root',
+        group   => $zabbix::params::group,
+        mode    => '0640'
+      }
+      service { 'zabbix::proxy':
+        ensure    => $service_status_real,
+        name      => $zabbix::params::proxy_service,
+        enable    => $service_enable_real,
+        require   => [ Package['zabbix::proxy'], File['zabbix/proxy/conf'] ]
+      }
+      Package['zabbix::proxy'] -> File['zabbix/proxy/conf']
+      Package['zabbix::proxy'] -> File <| tag == 'proxy' |>
     }
+    default: {}
+  }
 
-    File['zabbix/proxy/config/file'] {
-      content => $custom_template ? {
-        undef   => template('zabbix/proxy/zabbix_proxy.conf.erb'),
-        default => template($custom_template),
-      }
-    }
-
-    if $managedb == true {
-      if $dbrootpassword == undef {
-        fail('You must set dbrootpassword when managedb is set to true')
-      }
-      File['mysql/preseed'] { ensure => present, content => template('zabbix/mysql/preseed.erb') }
-      File['zabbix/proxy/preseed'] { ensure => present, content => template('zabbix/proxy/preseed.erb') }
-      Package['zabbix/proxy/package'] { responsefile => $zabbix::params::proxy_preseed_file, require => Package['mysql/packages'] } 
-      realize(Package['mysql/packages'])
-    }
-
-    File <| tag == proxy |>
-    Group <| title == 'zabbix/group' |> -> User <| title == 'zabbix/user' |> -> Package <| title == 'zabbix/proxy/package' |> -> Service <| title == 'zabbix/proxy/service' |>
+  package { 'zabbix::proxy':
+    ensure  => $ensure_package,
+    name    => $zabbix::params::proxy_package;
+  }
 
 }

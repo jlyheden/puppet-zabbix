@@ -1,48 +1,12 @@
 # MANAGED BY PUPPET
 
-Server=<%= scope.lookupvar("zabbix::proxy::server_host") %>
-ServerPort=<%= scope.lookupvar("zabbix::proxy::server_port") %>
-Hostname=<%= scope.lookupvar("zabbix::proxy::nodename") %>
-StartPollers=<%= scope.lookupvar("zabbix::proxy::startpollers") %>
-StartIPMIPollers=<%= scope.lookupvar("zabbix::proxy::startipmipollers") %>
-StartPollersUnreachable=<%= scope.lookupvar("zabbix::proxy::startpollersunreachable") %>
-StartTrappers=<%= scope.lookupvar("zabbix::proxy::starttrappers") %>
-StartPingers=<%= scope.lookupvar("zabbix::proxy::startpingers") %>
-StartDiscoverers=<%= scope.lookupvar("zabbix::proxy::startdiscoverers") %>
-StartHTTPPollers=<%= scope.lookupvar("zabbix::proxy::starthttppollers") %>
-
-ListenPort=<%= scope.lookupvar("zabbix::proxy::port") %>
-
-HeartbeatFrequency=<%= scope.lookupvar("zabbix::proxy::heartbeatfrequency") %>
-ConfigFrequency=<%= scope.lookupvar("zabbix::proxy::configfrequency") %>
-HousekeepingFrequency=<%= scope.lookupvar("zabbix::proxy::housekeepingfrequency") %>
-SenderFrequency=<%= scope.lookupvar("zabbix::proxy::senderfrequency") %>
-ProxyLocalBuffer=<%= scope.lookupvar("zabbix::proxy::proxylocalbuffer") %>
-ProxyOfflineBuffer=<%= scope.lookupvar("zabbix::proxy::proxyofflinebuffer") %>
-DebugLevel=<%= scope.lookupvar("zabbix::proxy::debuglevel") %>
-
-Timeout=<%= scope.lookupvar("zabbix::proxy::timeout") %>
-TrapperTimeout=<%= scope.lookupvar("zabbix::proxy::trappertimeout") %>
-UnreachablePeriod=<%= scope.lookupvar("zabbix::proxy::unreachableperiod") %>
-UnavailableDelay=<%= scope.lookupvar("zabbix::proxy::unavailabledelay") %>
-
-PidFile=<%= scope.lookupvar("zabbix::params::pid_dir") %>/zabbix_proxy.pid
-LogFile=<%= scope.lookupvar("zabbix::params::proxy_log_dir") %>/zabbix_proxy.log
-
-LogFileSize=<%= scope.lookupvar("zabbix::proxy::logfilesize") %>
-AlertScriptsPath=<%= scope.lookupvar("zabbix::params::alertd_dir") %>/
-ExternalScripts=<%= scope.lookupvar("zabbix::params::externalscripts_dir") %>
-
-FpingLocation=/usr/bin/fping
-
-# Location of fping6. Default is /usr/sbin/fping6
-# Make sure that fping binary has root permissions and SUID flag set
-#Fping6Location=/usr/sbin/fping6
-
-TmpDir=<%= scope.lookupvar("zabbix::proxy::tmpdir") %>
-PingerFrequency=<%= scope.lookupvar("zabbix::proxy::pingerfrequency") %>
-
-DBHost=<%= scope.lookupvar("zabbix::proxy::dbhost") %>
-DBName=<%= scope.lookupvar("zabbix::proxy::dbname") %>
-DBUser=<%= scope.lookupvar("zabbix::proxy::dbuser") %>
-DBPassword=<%= scope.lookupvar("zabbix::proxy::dbpassword") %>
+Server=<%= server %>
+DBHost=<%= dbhost %>
+DBName=<%= dbname %>
+DBUser=<%= dbuser %>
+<%- if dbpassword != '' -%>
+DBPassword=<%= dbpassword %>
+<%- end -%>
+<%- proxy_parameters_real.sort_by { |k,v| k }.each do |k| -%>
+  <%= k[0] %>=<%= k[1] %>
+<%- end -%>
