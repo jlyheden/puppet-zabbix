@@ -22,7 +22,7 @@ define zabbix::agent::userparameter (
   validate_re($ensure,$zabbix::params::valid_ensure_values)
 
   $filename = regsubst($name, '\W', '','G')
-  $resourcename = "zabbix/agent/conf_d/${name}"
+  $resourcename = "zabbix::agent/conf_d/${name}"
 
   # Param checking
   # This is quite ugly, is it possible to make it less so?
@@ -54,14 +54,14 @@ define zabbix::agent::userparameter (
     File[$resourcename] { notify => Service['zabbix::agent'] }
   }
 
-  @file { "zabbix/agent/conf_d/${name}":
+  @file { "zabbix::agent/conf_d/${name}":
     ensure  => $ensure,
     tag     => 'userparameter',
     path    => "${zabbix::params::agent_conf_d}/${filename}",
     owner   => $zabbix::params::user,
     group   => $zabbix::params::group,
     mode    => '0640',
-    require => File['zabbix/agent/conf_d'],
+    require => File['zabbix::agent/conf_d'],
   }
 
 }
