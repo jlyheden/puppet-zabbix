@@ -52,13 +52,11 @@ class zabbix::params {
   # OS dependent settings
   case $::operatingsystem {
     'Ubuntu', 'Debian': {
-      # Global settings
-      #$user = 'zabbix'
-      #$group = 'zabbix'
-      #$config_dir = '/etc/zabbix'
-      #$alertd_dir = "${config_dir}/alert.d"
-      #$pid_dir = '/var/run/zabbix'
-      $mysql_packages = [ 'mysql-client-5.1', 'mysql-common', 'mysql-server-5.1', 'mysql-server', 'dbconfig-common' ]
+      $mysql_packages = $::lsbdistcodename ? {
+        precise => [ 'mysql-client-5.5', 'mysql-common', 'mysql-server-5.5', 'mysql-server', 'dbconfig-common' ],
+        lucid   => [ 'mysql-client-5.1', 'mysql-common', 'mysql-server-5.1', 'mysql-server', 'dbconfig-common' ],
+        default => [ 'mysql-client-5.1', 'mysql-common', 'mysql-server-5.1', 'mysql-server', 'dbconfig-common' ]
+      }
       $mysql_preseed_file = '/var/local/mysql.preseed'
       $mysql_service = 'mysql'
       $bug_5610 = $::puppetversion ? {
