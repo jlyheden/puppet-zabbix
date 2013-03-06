@@ -7,7 +7,7 @@ class zabbix::mysql (
   $ensure         = 'UNDEF',
   $root_password  = 'UNDEF',
   $my_cnf         = 'UNDEF',
-  $source         = 'UNDEF',
+  $source         = 'UNDEF'
 ) inherits zabbix {
 
   $ensure_real = $ensure ? {
